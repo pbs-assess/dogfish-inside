@@ -1,2 +1,3 @@
 # dogfish-inside
-Inside dogfish stock assessment
+
+Stock Assessment for Inside Dogfish Stock in British Columbia
