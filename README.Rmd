@@ -56,6 +56,6 @@ flowchart LR
   data/-->_targets.R
   GFCatch---gfcatch-dogfish-4b.R-->gfcatch-dogfish-4b.rds
   iREC---irec-dogfish-4b.R-->irec-dogfish-4b.rds
-  TBA.csv---tba.R-->TBA.rda
+  TBA---tba.R-->TBA.rds
 
 ```
