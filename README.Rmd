@@ -43,16 +43,19 @@ flowchart LR
   subgraph dogfish-inside/
     _targets.R(["_targets.R"])
     subgraph data-raw/
-      gfcatch-lingcod-4b.R(["gfcatch-lingcod-4b.R"])
+      gfcatch-dogfish-4b.R(["gfcatch-dogfish-4b.R"])
+      irec-dogfish-4b.R(["irec-dogfish-4b.R"])
       tba.R(["tba.R"])
     end
     subgraph data/
-      gfcatch_lingcod_4b.rda
-      TBA.rda
+      gfcatch-dogfish-4b.rds
+      irec-dogfish-4b.rds
+      TBA.rds
     end
   end
   data/-->_targets.R
-  GFCatch---gfcatch-lingcod-4b.R-->gfcatch_lingcod_4b.rda
+  GFCatch---gfcatch-dogfish-4b.R-->gfcatch-dogfish-4b.rds
+  iREC---irec-dogfish-4b.R-->irec-dogfish-4b.rds
   TBA.csv---tba.R-->TBA.rda
 
 ```
