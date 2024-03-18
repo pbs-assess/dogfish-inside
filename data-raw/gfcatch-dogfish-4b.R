@@ -2,11 +2,11 @@
 
 ## Load packages ---------------------------------------------------------------
 
+library(dplyr)
 # remotes::install_github("pbs-assess/gfdata")
 library(gfdata)
-library(dplyr)
 
-## Source scripts --------------------------------------------------------------
+## Load scripts ----------------------------------------------------------------
 
 source("R/utils.R")
 
@@ -29,10 +29,13 @@ gfcatch_dogfish_4b <- gfdata::get_catch(
     discarded_kg,
     landed_pcs,
     discarded_pcs,
-    major_stat_area_code,
-    minor_stat_area_code,
-    major_stat_area_name
+    major_stat_area_name,
+    minor_stat_area_code
   )
+
+# View data --------------------------------------------------------------------
+
+tibble::view(gfcatch_dogfish_4b)
 
 ## Write to data/ --------------------------------------------------------------
 
