@@ -14,7 +14,8 @@ write_data <- function (..., path = "data") {
   } else {
     name <- names(args)[1]
   }
+  name <- gsub("_", "-", name)
   assign(x = name, value = ..1)
-  save(..., file = paste0(path, "/", name, ".rda"))
-  file.path(path, fs::path_ext_set(name, ".rda"))
+  saveRDS(..., file = paste0(path, "/", name, ".rds"), compress = TRUE)
+  file.path(path, fs::path_ext_set(name, ".rds"))
 }
