@@ -11,21 +11,22 @@ source("R/utils.R")
 
 ## List filenames in iREC estimates folder -------------------------------------
 
-list.files(path = "R:/GMU/iREC estimates/") # R: is the Region\ network drive
+# Region\ (R:\) Network Drive
+list.files(path = "R:/GMU/iREC estimates/")
 
-## Assign the current spreadsheet name -----------------------------------------
+## Assign the current spreadsheet path -----------------------------------------
 
-irec_name <- list.files(
+irec_path <- list.files(
   path = "R:/GMU/iREC estimates/", 
   pattern = "^iREC estimates.*\\.xlsx$", # Begins with "iREC estimates" etc.
   full.names = TRUE
 )
-irec_name
+irec_path
 
 ## Read iREC data --------------------------------------------------------------
 
 irec_dogfish_4b <- readxl::read_xlsx(
-  path = irec_name,
+  path = irec_path,
   sheet = "iREC estimates"
 ) |>
   dplyr::rename_with(.fn = tolower) |>
