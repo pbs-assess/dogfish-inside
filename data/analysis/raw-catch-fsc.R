@@ -5,6 +5,7 @@ fsc_path <- paste0(
   path, 
   "LingcodDogfishGroundfishFSCforallyears_BasicEstimate_21-Feb-24.xlsx"
 )
+
 # Read FSC dogfish catch from KREST survey for area 4B
 catch_fsc <- readxl::read_xlsx(
   path = fsc_path,

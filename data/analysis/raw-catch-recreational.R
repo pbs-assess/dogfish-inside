@@ -35,7 +35,7 @@ write_data(catch_recreational_creel, path = "data/raw")
 
 # Define irec path on Region\ (R:\) network drive
 irec_path <- list.files(
-  path = "R:/GMU/iREC estimates/", 
+  path = "R:/iREC reporting program/", 
   pattern = "^iREC estimates.*\\.xlsx$", # Begins with "iREC estimates" etc.
   full.names = TRUE
 )
