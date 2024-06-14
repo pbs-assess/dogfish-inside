@@ -16,6 +16,12 @@ resdoc.Rmd
 resdoc.tex
 *.knit.md
 
+# Figures
+*.png
+
+# Model fits
+*sdmTMB*.rds
+
 # Data
 *.Rdata
 *.csv
