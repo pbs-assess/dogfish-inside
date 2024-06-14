@@ -9,8 +9,9 @@
 
 ``` r
 # install.packages("remotes")
+remotes::install_github("pbs-assess/gfdata")
+remotes::install_github("pbs-assess/gfplot")
 remotes::install_github("r4ss/r4ss")
-remotes::install_github("seananderson/ggsidekick")
 remotes::install_github("PIFSCstockassessments/ss3diags")
 ```
 
@@ -30,3 +31,16 @@ for example using r4ss in RStudio:
 ``` r
 r4ss::get_ss3_exe(dir = "~/ss3")
 ```
+
+## Todos
+
+### Readme
+
+- [ ] Update install ss3 directions to put executable on PATH
+
+### Data
+
+- [ ] Update all data with updated gfdata/main
+- [ ] Update survey catch to include dogfish survey catch
+- [ ] Generate geostatistical indexes from HBLL hooks and sets
+- [ ] …
