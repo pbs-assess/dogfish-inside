@@ -5,7 +5,7 @@ source("R/utils.R")
 # Read commercial composition data from GFBio for area 4B
 comps_commercial <- gfdata::get_commercial_samples(
   species = "044",
-  unsorted_only = FALSE,
+  unsorted_only = TRUE,
   return_all_lengths = FALSE
 ) |>
   dplyr::filter(
