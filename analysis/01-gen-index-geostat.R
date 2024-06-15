@@ -3,37 +3,26 @@ library(dplyr)
 library(ggplot2)
 library(sdmTMB)
 library(tibble)
+# Source
+source("R/utils.R")
 # Theme set
 ggplot2::theme_set(gfplot::theme_pbs())
-# Read raw hooks and sets data
+
+# Read data --------------------------------------------------------------------
 h <- readRDS(here::here("data", "raw", "index-hbll-hooks.rds"))
 s <- readRDS(here::here("data", "raw", "index-hbll-sets.rds"))
-# View
+# View data
 colnames(h)
 colnames(s)
 tibble::view(h)
 tibble::view(s)
-# Add utm and date columns
+
+# Wrangle data -----------------------------------------------------------------
+length(which(is.na(s$depth_m))) # 0
+# Add columns
 s <- s |>
   sdmTMB::add_utm_columns() |>
-  # TODO: Okay to span two UTM zones? 32610 and 32609
-  dplyr::mutate(date2 = as.Date(time_deployed, format = "%Y-%m-%d H:M:S")) |>
-  dplyr::mutate(ymd = lubridate::ymd(date2)) |>
-  dplyr::mutate(julian = lubridate::yday(ymd))
-# Plot julian
-ggplot2::ggplot(s, ggplot2::aes(year, julian, colour = survey_abbrev)) +
-  ggplot2::geom_jitter(pch = 21, alpha = 0.3)
-# Plot utm
-ggplot2::ggplot(s, ggplot2::aes(X, Y, size = density_ppkm2)) +
-  ggplot2::geom_point(pch = 21, alpha = 0.3) +
-  ggplot2::facet_wrap(ggplot2::vars(year)) +
-  ggplot2::coord_fixed()
-# Depth and log hook count
-length(which(is.na(s$depth_m))) # 0
-s <- s |>
-  dplyr::filter(!is.na(depth_m)) |>
-  dplyr::mutate(log_hook_count = log(hook_count))
-tibble::view(s)
+  dplyr::mutate(doy = lubridate::yday(time_deployed))
 # Sum hooks
 h <- h |>
   dplyr::rowwise() |>
@@ -45,8 +34,88 @@ h <- h |>
         count_bait_only +
         count_bent_broken
     )
+  ) |>
+  dplyr::ungroup() |> # Undo rowwise()
+  # Hook competition
+  dplyr::mutate(
+    count_bait_adj = ifelse(count_bait_only > 0, count_bait_only, 1),
+    pit = count_bait_adj / sum_hooks,
+    ait = -log(pit) / (1 - pit)
   )
+# Check range
 range(h$sum_hooks) # 73 246
+range(h$pit) # 0.004065041 0.991031390
+range(h$ait) # 1.004511 5.527802
+# Check events
+length(setdiff(s$fishing_event_id, h$fishing_event_id)) # 6
+length(setdiff(h$fishing_event_id, s$fishing_event_id)) # 25
+# Join and columns
+d <- s |>
+  dplyr::inner_join(h, by = c("survey", "ssid", "year", "fishing_event_id")) |>
+  # Offsets
+  dplyr::mutate(offset_hk = log(hook_count / ait)) |>
+  dplyr::mutate(offset = log(hook_count)) |>
+  # CPUE
+  dplyr::mutate(cpue = catch_count / exp(offset)) |>
+  # Centred doy
+  dplyr::mutate(doy_centre = doy - round(mean(doy)))
+# Check
+tibble::view(d)
+nrow(s) # 1266
+nrow(h) # 1285
+nrow(d) # 1260
+
+# Plot data --------------------------------------------------------------------
+
+
+
+# Create mesh ------------------------------------------------------------------
+
+
+
+
+# Fit models -------------------------------------------------------------------
+
+
+
+
+# Compare models ---------------------------------------------------------------
+
+
+
+
+# Generate index ---------------------------------------------------------------
+
+
+
+
+# # Plot
+# ggplot(d, aes(year, biomass)) +
+#   geom_point() +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = lowerci, ymax = upperci), alpha = 0.4) +
+#   xlab('Year') + 
+#   ylab('Biomass estimate (kg)') +
+#   facet_wrap(vars(survey_abbrev))
+# # Save plot
+# save_plot("index-hbll-design", width = 190, height = 120)
+# # Write data
+# saveRDS(d, "data/generated/index-hbll-design.rds")
+
+
+# Plot julian
+ggplot2::ggplot(s, ggplot2::aes(year, julian, colour = survey_abbrev)) +
+  ggplot2::geom_jitter(pch = 21, alpha = 0.3)
+# Plot utm
+ggplot2::ggplot(s, ggplot2::aes(X, Y, size = density_ppkm2)) +
+  ggplot2::geom_point(pch = 21, alpha = 0.3) +
+  ggplot2::facet_wrap(ggplot2::vars(year)) +
+  ggplot2::coord_fixed()
+# Depth and log hook count
+s <- s |>
+  dplyr::filter(!is.na(depth_m)) |>
+  dplyr::mutate(log_hook_count = log(hook_count))
+tibble::view(s)
 # Plot count bait
 ggplot2::ggplot(h, ggplot2::aes(count_bait_only)) +
   ggplot2::geom_histogram() +
@@ -55,30 +124,12 @@ ggplot2::ggplot(h, ggplot2::aes(count_bait_only)) +
 ggplot2::ggplot(h, ggplot2::aes(sum_hooks)) +
   ggplot2::geom_histogram() +
   ggplot2::facet_wrap(~year)
-# Hook competition
-length(which(h$count_bait_only == 0)) # 89
-h$count_bait_only[h$count_bait_only == 0] <- 1
-h <- h |> 
-  dplyr::filter(sum_hooks > 0) |>
-  dplyr::mutate(pit = count_bait_only / sum_hooks) |>
-  dplyr::mutate(ait = -log(pit) / (1 - pit))
-range(h$pit) # 0.004065041 0.991031390
-range(h$ait) # 1.004511 5.527802
+
 # Plot
 ggplot2::ggplot(h, ggplot2::aes(pit, ait, group = year, col = year)) +
   ggplot2::geom_point()
-# How many mismatched?
-length(setdiff(s$fishing_event_id, h$fishing_event_id)) # 6
-length(setdiff(h$fishing_event_id, s$fishing_event_id)) # 25
-# Join sets and hooks
-d <- s |>
-  dplyr::inner_join(h, by = c("year", "fishing_event_id"))
-  # TODO: Why events in sets not found in hooks?
-  # TODO: Where did we lose rows in sets?
-tibble::view(d)
-nrow(s) # 1266
-nrow(h) # 1285
-nrow(d) # 1260
+
+
 # Plot
 ggplot2::ggplot(d, ggplot2::aes(count_target_species, catch_count)) + 
   ggplot2::geom_point()
@@ -99,12 +150,7 @@ ggplot2::ggplot(d, ggplot2::aes(hook_count, count_bait_only)) +
   ggplot2::facet_wrap(~year)
 # More bait than hooks?
 d |> dplyr::filter(count_bait_only > hook_count) |> nrow() # 0
-# Offsets
-d <- d |>
-  dplyr::mutate(offset_hk = log(hook_count / ait)) |>
-  dplyr::mutate(offset = log(hook_count))
-# How many NAs?
-length(which(is.na(d$offset))) # 0
+
 # Define coast
 coast <- rnaturalearth::ne_countries(
   scale = 10, 
@@ -132,9 +178,7 @@ gg <- ggplot(d, aes(longitude, latitude, fill = pit, colour = pit)) +
     colour = "Proportion baited hooks"
   )
 ggsave("report/figure/hbll-hook-baited.png", gg, height = 6, width = 5, dpi = 600)
-# Compute cpue
-d <- d |>
-  dplyr::mutate(cpue = catch_count / exp(offset))
+
 # Plot CPUE
 gg <- ggplot(d, aes(longitude, latitude, fill = cpue, colour = cpue)) +
   geom_sf(data = coast, inherit.aes = FALSE) +
@@ -178,6 +222,9 @@ gg <- d %>%
 ggsave("report/figure/hbll-cpue-depth.png", gg, height = 5, width = 6)
 # Design index
 # TODO: design based index
+
+
+
 # SDM mesh
 mesh <- make_mesh(d, c("X", "Y"), cutoff = 12)
 # TODO: What mesh cutoff?
