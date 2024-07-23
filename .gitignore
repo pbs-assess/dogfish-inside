@@ -24,7 +24,6 @@ resdoc.tex
 
 # Data
 *.Rdata
-*.csv
 *.rda
 *.xls
 *.xlsx
