@@ -2,10 +2,10 @@
 library(gfdata)
 source("R/utils.R")
 
-# Read commercial composition data from GFBio for area 4B
-comps_commercial <- gfdata::get_commercial_samples(
+# Read data
+samples_commercial <- gfdata::get_commercial_samples(
   species = "044",
-  unsorted_only = TRUE,
+  unsorted_only = FALSE,
   return_all_lengths = FALSE
 ) |>
   dplyr::filter(
@@ -18,6 +18,6 @@ comps_commercial <- gfdata::get_commercial_samples(
   )
 
 # View 
-tibble::view(comps_commercial)
+tibble::view(samples_commercial)
 # Write 
-write_data(comps_commercial, path = "data/raw")
+write_data(samples_commercial, path = "data/raw")

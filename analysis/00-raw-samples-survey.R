@@ -2,8 +2,8 @@
 library(gfdata)
 source("R/utils.R")
 
-# Read survey composition data from GFBio for area 4B
-comps_survey <- gfdata::get_survey_samples(
+# Read data
+samples_survey <- gfdata::get_survey_samples(
   species = "044",
   ssid = c(39, 40)
 ) |>
@@ -15,6 +15,6 @@ comps_survey <- gfdata::get_survey_samples(
   )
 
 # View 
-tibble::view(comps_survey)
+tibble::view(samples_survey)
 # Write 
-write_data(comps_survey, path = "data/raw")
+write_data(samples_survey, path = "data/raw")
