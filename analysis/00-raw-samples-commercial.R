@@ -3,10 +3,10 @@ library(gfdata)
 source("R/utils.R")
 
 # Read data
-samples_commercial <- gfdata::get_commercial_samples(
+d <- gfdata::get_commercial_samples(
   species = "044",
   unsorted_only = FALSE,
-  return_all_lengths = FALSE
+  return_all_lengths = FALSE # TODO: Returns fewer when true?
 ) |>
   dplyr::filter(
     major_stat_area_code == "01",
@@ -18,6 +18,6 @@ samples_commercial <- gfdata::get_commercial_samples(
   )
 
 # View 
-tibble::view(samples_commercial)
+tibble::view(d)
 # Write 
-write_data(samples_commercial, path = "data/raw")
+saveRDS(d, file = "data/raw/samples-commercial.rds")

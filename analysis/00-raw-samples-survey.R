@@ -3,7 +3,7 @@ library(gfdata)
 source("R/utils.R")
 
 # Read data
-samples_survey <- gfdata::get_survey_samples(
+d <- gfdata::get_survey_samples(
   species = "044",
   ssid = c(39, 40)
 ) |>
@@ -15,6 +15,6 @@ samples_survey <- gfdata::get_survey_samples(
   )
 
 # View 
-tibble::view(samples_survey)
+tibble::view(d)
 # Write 
-write_data(samples_survey, path = "data/raw")
+saveRDS(d, file = "data/raw/samples-survey.rds")

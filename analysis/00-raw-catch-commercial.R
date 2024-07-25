@@ -2,8 +2,8 @@
 # remotes::install_github("pbs-assess/gfdata")
 source("R/utils.R")
 
-# Read commercial dogfish catch from GFCatch for area 4B
-catch_commercial <- gfdata::get_catch(
+# Read data
+d <- gfdata::get_catch(
   species = "044",
   major = "01"
 ) |>
@@ -24,6 +24,6 @@ catch_commercial <- gfdata::get_catch(
     minor_stat_area_code
   )
 # View catch
-tibble::view(catch_commercial)
+tibble::view(d)
 # Write catch
-write_data(catch_commercial, path = "data/raw")
+saveRDS(d, file = "data/raw/catch-commercial.rds")
