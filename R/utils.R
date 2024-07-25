@@ -1,3 +1,36 @@
+fleet_index <- function (.fleet_name = NULL) {
+  .n <- fleet_name()
+  if (is.null(.fleet_name)) {
+    .d <- seq_along(.n)
+  } else {
+    .d <- which(.n == .fleet_name)
+  }
+  return(.d)
+}
+
+fleet_name <- function (.fleet_index = NULL) {
+  .d <- c(
+    "Bottom trawl landings",
+    "Bottom trawl discards",
+    "Midwater trawl",
+    "Hook and line landings",
+    "Hook and line discards",
+    "HBLL"
+  )
+  if (is.null(.fleet_index)) {
+    .fleet_index <- seq_along(.d)
+  }
+  return(.d[.fleet_index])
+}
+
+fleet <- function () {
+  tibble::tibble(
+    fleet_index = fleet_index(),
+    fleet_name = fleet_name()
+  )
+}
+
+
 #' Write An Object And Return The Path
 #'
 #' @param filename [character()] The file name
