@@ -10,12 +10,12 @@ fleet_index <- function (.fleet_name = NULL) {
 
 fleet_name <- function (.fleet_index = NULL) {
   .d <- c(
-    "Bottom trawl landings",
-    "Bottom trawl discards",
-    "Midwater trawl",
-    "Hook and line landings",
-    "Hook and line discards",
-    "HBLL"
+    "HBLL" # ,
+    # "Bottom trawl landings",
+    # "Bottom trawl discards",
+    # "Midwater trawl",
+    # "Hook and line landings",
+    # "Hook and line discards"
   )
   if (is.null(.fleet_index)) {
     .fleet_index <- seq_along(.d)
