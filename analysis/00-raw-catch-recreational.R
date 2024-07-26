@@ -1,11 +1,11 @@
-
 # Define creel path on Salmon$ (S:\) network drive
-path <- "S:/FMCR_Fishery_Monitoring_Catch_Reporting/Recreational_CM/Catch_Data/"
-creel_path <- paste0(path, "SC Sport Catch (Master Do Not Edit).xlsx")
+p <- "S:/FMCR_Fishery_Monitoring_Catch_Reporting/Recreational_CM/Catch_Data/"
+f <- "SC Sport Catch (Master Do Not Edit).xlsx"
+pf <- paste0(p, f)
 
 # Read recreational dogfish catch from CREST creel survey for area 4B
-catch_recreational_creel <- readxl::read_xlsx(
-  path = creel_path,
+d <- readxl::read_xlsx(
+  path = pf,
   sheet = "YTD"
 ) |>
   dplyr::rename_with(.fn = tolower) |>
@@ -29,22 +29,22 @@ catch_recreational_creel <- readxl::read_xlsx(
     percent_standard_error
   )
 # View catch
-tibble::view(catch_recreational_creel)
+tibble::view(d)
 # Write catch
-write_data(catch_recreational_creel, path = "data/raw")
+saveRDS(d, file = "data/raw/catch-recreational-creel.rds")
 
 # Define irec path on Region\ (R:\) network drive
-irec_path <- list.files(
+p2 <- list.files(
   path = "R:/iREC reporting program/", 
-  pattern = "^iREC estimates.*\\.xlsx$", # Begins with "iREC estimates" etc.
+  pattern = "^iREC estimates CALIBRATED.*\\.xlsx$",
   full.names = TRUE
 )
-irec_path
+p2
 
 # Read recreational dogfish catch from iREC survey for area 4B
-catch_recreational_irec <- readxl::read_xlsx(
-  path = irec_path,
-  sheet = "iREC estimates"
+d2 <- readxl::read_xlsx(
+  path = p2,
+  sheet = "calibrated iREC estimates"
 ) |>
   dplyr::rename_with(.fn = tolower) |>
   dplyr::filter(
@@ -68,6 +68,6 @@ catch_recreational_irec <- readxl::read_xlsx(
     variance
   )
 # View catch
-tibble::view(catch_recreational_irec)
+tibble::view(d2)
 # Write catch
-write_data(catch_recreational_irec, path = "data/raw")
+saveRDS(d2, file = "data/raw/catch-recreational-irec.rds")

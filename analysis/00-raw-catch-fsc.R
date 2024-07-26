@@ -1,14 +1,11 @@
-
 # Define FSC path on DFO laptop drive
-path <- "C:/Users/rogersl/data/fsc/"
-fsc_path <- paste0(
-  path, 
-  "LingcodDogfishGroundfishFSCforallyears_BasicEstimate_21-Feb-24.xlsx"
-)
+p <- "C:/Users/rogersl/data/fsc/"
+f <- "LingcodDogfishGroundfishFSCforallyears_BasicEstimate_21-Feb-24.xlsx"
+pf <- paste0(p, f)
 
 # Read FSC dogfish catch from KREST survey for area 4B
-catch_fsc <- readxl::read_xlsx(
-  path = fsc_path,
+d <- readxl::read_xlsx(
+  path = pf,
   sheet = "Interview Data_LingcodDogfishGr"
 ) |>
   dplyr::rename_with(.fn = tolower) |>
@@ -37,6 +34,6 @@ catch_fsc <- readxl::read_xlsx(
     comment
   )
 # View catch
-tibble::view(catch_fsc)
+tibble::view(d)
 ## Write catch
-write_data(catch_fsc, path = "data/raw")
+saveRDS(d, file = "data/raw/catch-fsc.rds")

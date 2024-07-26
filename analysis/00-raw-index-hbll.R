@@ -2,28 +2,28 @@
 source("R/utils.R")
 
 # Read HBLL survey design index from GFBio for area 4B
-index_hbll_design <- gfdata::get_survey_index(
+d <- gfdata::get_survey_index(
   species = "044",
   ssid = c(39, 40)
 )
 # View
-tibble::view(index_hbll_design)
+tibble::view(d)
 # Write 
-write_data(index_hbll_design, path = "data/raw")
+saveRDS(d, file = "data/raw/index-hbll-design.rds")
 
 # Read HBLL survey hook data from GFBio for area 4B
-index_hbll_hooks <- gfdata::get_ll_hook_data(
+dh <- gfdata::get_ll_hook_data(
   species = "044", 
   ssid = c(39, 40)
 ) |>
   dplyr::filter(major == 1) # Area 4B
 # View hooks
-tibble::view(index_hbll_hooks)
+tibble::view(dh)
 # Write hooks
-write_data(index_hbll_hooks, path = "data/raw")
+saveRDS(dh, file = "data/raw/index-hbll-hooks.rds")
 
 # Read HBLL survey set data from GFBio for area 4B
-index_hbll_sets <- gfdata::get_survey_sets(
+ds <- gfdata::get_survey_sets(
   species = "044", 
   ssid = c(39, 40)
 ) |> 
@@ -32,6 +32,6 @@ index_hbll_sets <- gfdata::get_survey_sets(
     ssid = survey_series_id
   )
 # View 
-tibble::view(index_hbll_sets)
+tibble::view(ds)
 # Write 
-write_data(index_hbll_sets, path = "data/raw")
+saveRDS(ds, file = "data/raw/index-hbll-sets.rds")
