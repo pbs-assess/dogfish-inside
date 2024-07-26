@@ -15,7 +15,8 @@ ggplot2::theme_set(gfplot::theme_pbs())
 
 # TODO: Need to reconcile count vs kg 
 
-catch <- readRDS("data/generated/catch-commercial.rds") |>
+# Commercial catch
+dc <- readRDS("data/generated/catch-commercial.rds") |>
   dplyr::filter(area == "4B", year <= 2023) |>
   dplyr::group_by(year, gear) |>
   dplyr::summarise(
@@ -23,6 +24,9 @@ catch <- readRDS("data/generated/catch-commercial.rds") |>
     discard = 1e-3 * sum(discarded_kg),
     .groups = "drop" 
   )
+
+# Survey catch
+# TODO: survey catch
 
 # Define catch -----------------------------------------------------------------
 
