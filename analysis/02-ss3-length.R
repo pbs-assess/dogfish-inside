@@ -14,7 +14,7 @@ ggplot2::theme_set(gfplot::theme_pbs())
 # Read data --------------------------------------------------------------------
 
 # Commercial samples
-dc <- readRDS("data/raw/comps-commercial.rds") |>
+dc <- readRDS("data/raw/samples-commercial.rds") |>
   dplyr::filter(grepl("4B", major_stat_area_name)) |>
   dplyr::filter(grepl("TRAWL", gear_desc) | grepl("LONGLINE", gear_desc)) |>
   dplyr::select(
@@ -29,11 +29,38 @@ dc <- readRDS("data/raw/comps-commercial.rds") |>
   )
 
 # Survey samples
-ds <- readRDS("data/raw/comps-survey.rds")
+ds <- readRDS("data/raw/samples-survey.rds")
 
 # Define length ----------------------------------------------------------------
 
 # TODO: Revisit with keepers and discards in the commercial samples
+
+b <- dc |>
+  dplyr::filter(gear_desc == "BOTTOM TRAWL")
+b |>
+  dplyr::group_by(year, sampling_desc) |>
+  dplyr::count() |>
+  dplyr::arrange(sampling_desc, year)
+unique(b$sampling_desc)
+
+m <- dc |>
+  dplyr::filter(gear_desc == "MIDWATER TRAWL")
+m |>
+  dplyr::group_by(year, sampling_desc) |>
+  dplyr::count() |>
+  dplyr::arrange(sampling_desc, year)
+
+hl <- dc |>
+  dplyr::filter(gear_desc == "LONGLINE")
+hl |>
+  dplyr::group_by(year, sampling_desc) |>
+  dplyr::count() |>
+  dplyr::arrange(sampling_desc, year) |>
+  tibble::view()
+
+
+
+
 
 # Trawl landing
 f1 <- dc |>
