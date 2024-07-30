@@ -8,7 +8,7 @@ source("R/utils.R")
 # Theme set
 ggplot2::theme_set(gfplot::theme_pbs())
 
-# Tidy data --------------------------------------------------------------------
+# Read data --------------------------------------------------------------------
 
 # Adapted from: 
 # - gfcatch::tidy_catch()
@@ -18,15 +18,13 @@ d <- readRDS(here::here("data", "raw", "catch-commercial.rds")) |>
   dplyr::mutate(area = gfplot::assign_areas(major_stat_area_name, "4B")) |>
   dplyr::filter(!is.na(species_common_name), !is.na(year)) |>
   dplyr::mutate(
-    gear = dplyr::recode(
+    gear = dplyr::case_match(
       gear,
-      `UNKNOWN` = "Unknown/trawl",
-      `BOTTOM TRAWL` = "Bottom trawl",
-      `HOOK AND LINE` = "Hook and line",
-      `LONGLINE` = "Hook and line",
-      `MIDWATER TRAWL` = "Midwater trawl",
-      `TRAP` = "Trap",
-      `UNKNOWN TRAWL` = "Unknown/trawl"
+      c("BOTTOM TRAWL")              ~ "Bottom trawl",
+      c("MIDWATER TRAWL")            ~ "Midwater trawl",
+      c("HOOK AND LINE", "LONGLINE") ~ "Hook and line",
+      c("TRAP")                      ~ "Trap",
+      c("UNKNOWN", "UNKNOWN TRAWL")  ~ "Unknown/trawl",
     )
   ) |>
   select(year, area, species_common_name, gear, landed_kg, discarded_kg) |>
@@ -36,29 +34,18 @@ d <- readRDS(here::here("data", "raw", "catch-commercial.rds")) |>
     discarded_kg = sum(discarded_kg, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  dplyr::arrange(species_common_name, year)
+  dplyr::arrange(species_common_name, year, gear)
 
-# Write summarized data
-saveRDS(d, file = "data/generated/catch-commercial-4B-summarized.rds")
-  
-# Filter years
-# - Trawl >= 1996
-# - Longline >= 2007
-
-d_new <- d |>
-  dplyr::filter(
-    (gear %in% c("Bottom trawl", "Midwater trawl") & year >= 1996) |
-      (gear %in% c("Hook and line", "Trap", "Unknown/trawl") & year >= 2007)
-  )
+# TODO Consider what years to use
 
 
 # Read historical data ---------------------------------------------------------
 
-d_old <- NULL # TODO: Read old data
+d_old <- NULL # TODO Read old data
 
 # Bind data --------------------------------------------------------------------
 
-d <- bind_rows(d_new, d_old)
+d <- bind_rows(d, d_old)
 
 # Write data -------------------------------------------------------------------
 
@@ -66,4 +53,16 @@ saveRDS(d, file = "data/generated/catch-commercial.rds")
 
 # Plot data --------------------------------------------------------------------
 
-# TODO: Plot data
+dd <- d |>
+  dplyr::mutate(facet = gear, .before = 3) |>
+  tidyr::pivot_longer(
+    cols = c("landed_kg", "discarded_kg"),
+    names_to = "desc",
+    values_to = "value"
+  ) |>
+  dplyr::mutate(gear = ifelse(desc == "discarded_kg", "Discarded", gear))
+
+# Plot
+# TODO Consider adapting plot_catch()
+gfplot::plot_catch(dd, xlim = c(1954, 2023)) +
+  ggplot2::facet_wrap(~facet, ncol = 1)

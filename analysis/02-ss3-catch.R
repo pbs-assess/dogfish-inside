@@ -13,54 +13,46 @@ ggplot2::theme_set(gfplot::theme_pbs())
 
 # Read data --------------------------------------------------------------------
 
-# TODO: Need to reconcile count vs kg 
-
 # Commercial catch
+# TODO Retain fishing month?
 dc <- readRDS("data/generated/catch-commercial.rds") |>
   dplyr::filter(area == "4B", year <= 2023) |>
-  dplyr::group_by(year, gear) |>
+  dplyr::mutate(
+    gear = dplyr::case_match(
+      gear,
+      c("Bottom trawl", "Unknown/trawl")  ~ "Bottom trawl",
+      c("Midwater trawl")                 ~ "Midwater trawl",
+      c("Hook and line")                  ~ "Hook and line",
+    )
+  ) |>
+  tidyr::drop_na(gear) |>
+  dplyr::mutate(fleet = fleet(gear), .before = 3) |>
+  dplyr::group_by(year, fleet) |>
   dplyr::summarise(
-    landing = 1e-3 * sum(landed_kg),
-    discard = 1e-3 * sum(discarded_kg),
-    .groups = "drop" 
-  )
+    landed_kt = 1e-3 * sum(landed_kg),
+    discarded_kt = 1e-3 * sum(discarded_kg),
+    total_kt = sum(landed_kt + discarded_kt),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(value = total_kt) |>
+  dplyr::select(year, fleet, value) |>
+  dplyr::arrange(fleet, year)
 
 # Survey catch
-# TODO: survey catch
+# TODO Retain survey month?
+ds <- readRDS("data/generated/catch-survey.rds") |>
+  dplyr::filter(area == "4B", year <= 2023) |>
+  dplyr::mutate(fleet = fleet(survey), .before = 3) |>
+  dplyr::group_by(year, fleet) |>
+  dplyr::summarise(
+    total_kpc = 1e-3 * sum(total_pc),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(value = total_kpc) |>
+  dplyr::select(year, fleet, value) |>
+  dplyr::arrange(fleet, year)
 
-# Define catch -----------------------------------------------------------------
-
-# Trawl landing
-f1 <- catch |>
-  dplyr::filter(gear %in% c("Bottom trawl", "Unknown/trawl")) |>
-  dplyr::summarise(value = sum(landing), .by = year) |>
-  mutate(fleet = 1)
-
-# Trawl discard
-f2 <- catch |>
-  dplyr::filter(gear %in% c("Bottom trawl", "Unknown/trawl")) |>
-  dplyr::summarise(value = sum(discard), .by = year) |>
-  mutate(fleet = 2)
-
-# Midwater trawl
-f3 <- catch |>
-  dplyr::filter(gear %in% c("Midwater trawl")) |>
-  dplyr::summarise(value = sum(landing + discard), .by = year) |>
-  mutate(fleet = 3)
-
-# Hook and line landing
-f4 <- catch |>
-  dplyr::filter(gear %in% c("Hook and line")) |>
-  dplyr::summarise(value = sum(landing), .by = year) |>
-  mutate(fleet = 4)
-
-# Hook and line discard
-f5 <- catch |>
-  dplyr::filter(gear %in% c("Hook and line")) |>
-  dplyr::summarise(value = sum(discard), .by = year) |>
-  mutate(fleet = 5)
-
-# HBLL Inside
+# DF Survey?
 
 # Recreational
 
@@ -68,8 +60,9 @@ f5 <- catch |>
 
 # Salmon bycatch
 
-# Assemble catch
-d <- dplyr::bind_rows(f1, f2, f3, f4, f5) |>
+# Define catch -----------------------------------------------------------------
+
+d <- dplyr::bind_rows(dc, ds) |>
   dplyr::mutate(value = round(value, 3)) |>
   dplyr::mutate(se = 0.01) |>
   dplyr::mutate(season = 1) |>
@@ -77,10 +70,10 @@ d <- dplyr::bind_rows(f1, f2, f3, f4, f5) |>
   dplyr::select(year, season, fleet, value, se) |>
   dplyr::arrange(fleet, year)
 
+# Write data -------------------------------------------------------------------
+
+write.csv(d, file = "data/ss3/ss3-catch.csv", row.names = FALSE)
+
 # Plot catch -------------------------------------------------------------------
 
 # TODO: Plot catch
-
-# Write catch ------------------------------------------------------------------
-
-write.csv(d, file = "data/ss3/ss3-catch.csv", row.names = FALSE)
