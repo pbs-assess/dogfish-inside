@@ -28,7 +28,7 @@ hbll <- readRDS("data/generated/index-geostat-hbll.rds") |>
 # TODO Why not scale indexes into c(0, 1)? Would need to scale se too...
 
 d <- dplyr::bind_rows(hbll) |>
-  dplyr::mutate(value = round(est, 3)) |>
+  dplyr::mutate(est = round(est, 3)) |>
   dplyr::mutate(se = round(se, 3)) |>
   dplyr::mutate(month = 1) |> 
   dplyr::filter(est > 0) |>
