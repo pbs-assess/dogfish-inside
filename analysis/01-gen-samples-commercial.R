@@ -16,15 +16,31 @@ d <- readRDS("data/raw/samples-commercial.rds") |>
   dplyr::mutate(
     gear = dplyr::case_match(
       gear,
-      c("BOTTOM TRAWL")              ~ "Bottom trawl",
-      c("MIDWATER TRAWL")            ~ "Midwater trawl",
-      c("HOOK AND LINE", "LONGLINE") ~ "Hook and line",
-      c("TRAP")                      ~ "Trap",
-      c("UNKNOWN", "UNKNOWN TRAWL")  ~ "Unknown/trawl",
+      c("BOTTOM TRAWL", "UNKNOWN TRAWL") ~ "Bottom trawl",
+      c("MIDWATER TRAWL")                ~ "Midwater trawl",
+      c("HOOK AND LINE", "LONGLINE")     ~ "Hook and line",
     )
+  ) |>
+  tidyr::drop_na(gear) |>
+  dplyr::filter(sampling_desc %in% c("KEEPERS", "UNSORTED")) |>
+  dplyr::select(
+    year,
+    gear,
+    species_common_name,
+    sex,
+    length,
+    length_type,
+    sampling_desc,
+    area
   )
 
 # TODO Check length distributions - different between discards/keeper/unsorted?
+
+# Write data -------------------------------------------------------------------
+
+saveRDS(d, file = "data/generated/samples-commercial.rds")
+
+# Plot data --------------------------------------------------------------------
   
 # Glance
 dbt <- d |> dplyr::filter(gear == "Bottom trawl")
