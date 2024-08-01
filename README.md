@@ -12,22 +12,13 @@
 remotes::install_github("pbs-assess/gfdata")
 remotes::install_github("pbs-assess/gfplot")
 remotes::install_github("r4ss/r4ss")
+remotes::install_github("Cole-Monnahan-NOAA/adnuts")
 remotes::install_github("PIFSCstockassessments/ss3diags")
 ```
 
-### Stock Synthesis 3.0
+### Stock Synthesis 3.30
 
-Create a directory for the ss3 executable, for example using shell:
-
-``` shell
-cd ~
-mkdir ss3
-```
-
-Download the latest release of [Stock Synthesis
-3.0](https://github.com/nmfs-ost/ss3-source-code?tab=readme-ov-file),
-for example using r4ss in RStudio:
-
-``` r
-r4ss::get_ss3_exe(dir = "~/ss3")
-```
+- Download the latest release of [Stock Synthesis
+  3.30](https://github.com/nmfs-ost/ss3-source-code?tab=readme-ov-file)
+- Confirm that the ss3 executable is available in the R `$PATH`, for
+  example using `r4ss::check_exe()`
