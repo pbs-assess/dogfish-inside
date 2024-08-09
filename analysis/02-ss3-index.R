@@ -33,11 +33,12 @@ d <- dplyr::bind_rows(hbll) |>
   dplyr::mutate(month = 1) |> 
   dplyr::filter(est > 0) |>
   dplyr::select(year, month, fleet, est, se) |>
-  dplyr::arrange(fleet, year)
+  dplyr::arrange(fleet, year) |> 
+  as.data.frame()
 
 # Plot index -------------------------------------------------------------------
 # TODO: Plot index
 
 # Write index ------------------------------------------------------------------
 
-write.csv(d, file = "data/ss3/ss3-index.csv", row.names = FALSE)
+saveRDS(d, file = "data/ss3/index.rds")

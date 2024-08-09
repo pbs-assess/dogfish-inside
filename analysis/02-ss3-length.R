@@ -54,9 +54,10 @@ d <- dplyr::bind_rows(dc, ds) |>
   ) |>
   dplyr::mutate(month = 1, .before = fleet) |>
   dplyr::mutate(sex2 = 3, .before = N) |>
-  dplyr::mutate(partition = 0, .before = N)
+  dplyr::mutate(partition = 0, .before = N) |> 
+  as.data.frame()
 
 
 # Write data -------------------------------------------------------------------
 
-write.csv(d, file = "data/ss3/ss3-length.csv", row.names = FALSE)
+saveRDS(d, file = "data/ss3/length.rds")
