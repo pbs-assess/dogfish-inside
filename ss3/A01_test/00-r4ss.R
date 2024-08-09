@@ -1,47 +1,155 @@
 # Load packages
+library(dplyr)
 library(r4ss)
+library(tibble)
+
+# Path -------------------------------------------------------------------------
+
+path <- file.path("ss3", "A01_test")
 
 # Workflow inputs --------------------------------------------------------------
 
 max_phase <- 10
 
-# Data frames ------------------------------------------------------------------
+# Dimension inputs -------------------------------------------------------------
 
-# Fleets
-fleet_info # TODO See manual p 40 (use dogfish-assess colnames)
-fleet_info_01 # TODO
-fleet_info_02 # TODO
-fleet_names <- fleet_info |> dplyr::pull(fleet_names) # TODO
-fleet_timing <- fleet_info |> dplyr::pull(fleet_timing) # TODO
-fleet_units <- fleet_info |> dplyr::pull(fleet_units) # TODO
-fleet_area <- fleet_info |> dplyr::pull(fleet_area) # TODO
-n_fleets <- fleet_info |> dplyr::pull(fleet_index) |> max() # TODO
-n_fleets_fishery # TODO
-n_fleets_survey # TODO
-# Catch
-catch <- readr::read_csv(here::here("data", "ss3", "ss3-catch.csv"))
-cpue_info # TODO
-cpue # TODO
-# Lengths
-bin_size <- 5
-bin_min <- 25
-bin_max <- 115
-bins <- seq(bin_min, bin_max, bin_size)
-n_bins <- length(bins)
-lengths <- readr::read_csv(here::here("data", "ss3", "ss3-length.csv"))
-length_info # TODO See manual p 56
-comp_tail_compression # TODO
-add_to_comp # TODO
-max_combined_bin # TODO
+# TODO Consider month_spawn
+
+# Time
+year_start <- 1954
+year_end <- 2023
+n_seasons <- 1
+n_subseasons <- 2 # Must be even and >=2
+months_per_season <- 12
+# Space
+n_areas <- 1
+# Composition
+n_ages <- 70
+n_sexes <- 2
+# Spawn timing
+month_spawn <- 1
+season_spawn <- 1
+# Growth
+n_morphs <- 1
+n_platoons <- 1
+
+# Data inputs ------------------------------------------------------------------
+
+# TODO Replace NULL values
+# TODO Consider bottom trawl cpue
+# TODO Why se_log for outside cpue
+# TODO Update month in cpue
+# TODO Check length month
+
+# SS3 name: Fleet Definition
+# r4ss name: fleetinfo
+# Stable across models: Yes
+# Manual page: 40
+fleet_info <- readRDS("data/ss3/fleet-info.rds")
+# Vectors
+fleet_types  <- fleet_info |> dplyr::pull(type) 
+fleet_names  <- fleet_info |> dplyr::pull(fleet_name)
+fleet_timing <- fleet_info |> dplyr::pull(fleet_timing) 
+fleet_units  <- fleet_info |> dplyr::pull(fleet_units)  
+fleet_area   <- fleet_info |> dplyr::pull(area)   
+# Scalars
+n_fleets <- nrow(fleet_info)
+n_fleets_fishery <- length(which(fleet_types == 1L))
+n_fleets_survey <- length(which(fleet_types == 3L))
+
+# SS3 name: catch
+# Stable across models: highdiscard differs
+# Manual page: 46
+catch <- readRDS("data/ss3/catch.rds")
+colnames(catch)[2] <- c("seas") # SS_writedat balks at "season"
+
+# SS3 name: Indices
+# r4ss name: CPUEinfo and CPUE
+# Stable across models: some change index set
+# Manual page: 48
+cpue_info <- readRDS("data/ss3/cpue-info.rds")
+cpue <- readRDS("data/ss3/index.rds")
+
+# SS3 name: Population Length Bins
+# Manual page: 55
+length_bin_method <- 2
+length_bin_size <- 5
+length_bin_min <- 25
+length_bin_max <- 115
+length_bins <- seq(length_bin_min, length_bin_max, length_bin_size)
+n_length_bins <- length(length_bins)
+
+# SS3 name: Length Composition Data Structure
+# r4ss name: lencomp
+# Manual page: 56
+lengths <- readRDS("data/ss3/length.rds")
+length_info <- readRDS("data/ss3/length-info.rds")
+use_length_composition <- 1
+
+# SS3 name: Age Composition Option
+# Manual page: 62
+n_age_bins <- 0
+
+# Starter inputs ---------------------------------------------------------------
+
+# TODO Consider sd report years
+
+# SD Report
+year_min_sd_report <- 2023
+year_max_sd_report <- 2023
+# MCMC
+mcmc_burn <- 250
+mcmc_thin <- 5
+# Depletion basis: 0 = skip; 1 = B0; 2 = BMSY
+depletion_basis <- 1
+
+
+
+# Control inputs ---------------------------------------------------------------
+
+# TODO Continue editing control inputs section
+
+
+# Control
+max_combined_bin <- NULL # TODO
 bins_pop <- seq(10, 115, 5)
 n_bins_pop <- length(bins_pop)
 # Ages
-n_ages <- 70
+n_ages <- 70 # Cp. n_age
+age_at_maturity <- NULL # TODO
+first_mature_age <- 18 # TODO Consider
+# Recruitment
+recr_dist_pattern <- NULL # TODO (control)
+
+time_vary_auto_generation <- NULL # TODO (control)
+
+recdev_year_main_start <- NULL # TODO
+recdev_year_main_end <- NULL # TODO
+recdev_phase <- -3 # TODO Check
+
+# Mortality and growth
+mortality_growth_parameters <- NULL # TODO
+
+# SR
+sr_function <- 7 # 7 = survivorship function recruits <= production
+sr_parameters <- NULL # TODO
+
+# Fishing
+maximum_f_value <- NULL # TODO
+
+# Catchability
+Q_options <- NULL # TODO
+Q_parameters <- NULL # TODO
+
+# Selectivity
+size_selex_types <- NULL # TODO
+age_selex_types <- NULL # TODO
+size_selex_parameters <- NULL # TODO
+age_selex_parameters <- NULL # TODO
+
+var_adjustment <- NULL # TODO
 
 
-# Path -------------------------------------------------------------------------
-
-path <- here::here("ss3", "A01_test")
 
 # Starter ----------------------------------------------------------------------
 
@@ -62,119 +170,127 @@ starter <- list(
   soft_bounds = 1, # 0 = omit; 1 = use
   N_bootstraps = 1, # 0 = no .ss_new files; 1 = annotate replicate of data
   last_estimation_phase = max_phase, # -1 = read and exit; n = exit after phase
-  MCMCburn = 250, # MCMC burn in
-  MCMCthin = 5, # MCMC thin interval
+  MCMCburn = mcmc_burn,
+  MCMCthin = mcmc_thin,
   jitter_fraction = 0,
-  minyr_sdreport = 2023, # TODO Why both 2023?
-  maxyr_sdreport = 2023, # TODO Why both 2023?
-  N_STD_yrs = 0, # Extra SD Report Years?
+  minyr_sdreport = year_min_sd_report,
+  maxyr_sdreport = year_max_sd_report,
+  N_STD_yrs = 0, # Extra SD Report Years
   converge_criterion = 1e-04, # Change in log likelihood denoting convergence
   retro_yr = 0, # 0 = none; -x adjust model end year
   min_age_summary_bio = 1, # Min age for inclusion in summary biomass
-  depl_basis = 1, # TODO Why? 0 = skip; 1 = relative to B0; 2 = relative to MSY
-  depl_denom_frac = 1, # Value to use
-  SPR_basis = 0, # TODO Why? 0 = skip
+  depl_basis = depletion_basis,
+  depl_denom_frac = 1,
+  SPR_basis = 0, # 0 = skip
   F_report_units = 1, # 0 = skip; 1 = biomass; 2 = numbers
-  F_age_range = c(NA, NA), # Conditional
+  # F_age_range = c(NA, NA),
   F_report_basis = 0, # 0 = report raw
   MCMC_output_detail = 2, # 2 = write report for each mceval
   ALK_tolerance = 0, # Disabled; use 0
-  final = 3.3, # Model version check value
-  seed = -1 # TODO Why?
+  final = "3.30" # Model version check value
+  # seed = NULL
 )
+
+# Write
+# SS_writestarter(starter, file.path(path, "starter.ss"), overwrite = TRUE)
 
 # Control ----------------------------------------------------------------------
 
 control <- list(
-  warnings = ,
-  Comments = ,
-  nseas = ,
-  N_areas = ,
-  Nages = ,
-  Nsexes = ,
-  Npopbins = ,
-  Nfleets = ,
-  Do_AgeKey = ,
-  fleetnames = ,
-  sourcefile = ,
-  type = ,
-  ReadVersion = ,
-  eof = ,
-  EmpiricalWAA = ,
-  N_GP = ,
-  N_platoon = ,
-  recr_dist_method = ,
-  recr_global_area = ,
-  recr_dist_read = ,
-  recr_dist_inx = ,
-  recr_dist_pattern = ,
-  N_Block_Designs = ,
-  blocks_per_pattern = ,
-  Block_Design = ,
-  time_vary_adjust_method = ,
-  time_vary_auto_generation = ,
-  natM_type = ,
-  GrowthModel = ,
-  Growth_Age_for_L1 = ,
-  Growth_Age_for_L2 = ,
-  Exp_Decay = ,
-  Growth_Placeholder = ,
-  N_natMparms = ,
-  SD_add_to_LAA = ,
-  CV_Growth_Pattern = ,
-  maturity_option = ,
-  First_Mature_Age = ,
-  fecundity_option = ,
-  hermaphroditism_option = ,
-  parameter_offset_approach = ,
-  MG_parms = ,
-  MGparm_seas_effects = ,
-  SR_function = ,
-  Use_steep_init_equi = ,
-  Sigma_R_FofCurvature = ,
-  SR_parms = ,
-  do_recdev = ,
-  MainRdevYrFirst = ,
-  MainRdevYrLast = ,
-  recdev_phase = ,
-  recdev_adv = ,
-  recdev_early_start = ,
-  recdev_early_phase = ,
-  Fcast_recr_phase = ,
-  lambda4Fcast_recr_like = ,
-  last_early_yr_nobias_adj = ,
-  first_yr_fullbias_adj = ,
-  last_yr_fullbias_adj = ,
-  first_recent_yr_nobias_adj = ,
-  max_bias_adj = ,
-  period_of_cycles_in_recr = ,
-  min_rec_dev = ,
-  max_rec_dev = ,
-  N_Read_recdevs = ,
-  F_ballpark = ,
-  F_ballpark_year = ,
-  F_Method = ,
-  maxF = ,
-  F_iter = ,
-  Q_options = ,
-  Q_parms = ,
-  size_selex_types = ,
-  age_selex_types = ,
-  size_selex_parms = ,
-  age_selex_parms = ,
-  Use_2D_AR1_selectivity = ,
-  TG_custom = ,
-  DoVar_adjust = ,
-  maxlambdaphase = ,
-  sd_offset = ,
-  lambdas = ,
-  N_lambdas = ,
-  more_stddev_reporting = ,
-  stddev_reporting_specs = ,
-  stddev_reporting_selex = ,
-  stddev_reporting_growth = ,
-  stddev_reporting_N_at_A = 
+  warnings = "", # TODO Check
+  Comments = NULL,
+  nseas = n_seasons,
+  N_areas = n_areas,
+  Nages = n_ages,
+  Nsexes = n_sexes,
+  Npopbins = n_bins_pop,
+  Nfleets = n_fleets,
+  Do_AgeKey = 0,
+  fleetnames = fleet_names,
+  sourcefile = file.path(path, "control.ss"),
+  type = "Stock_Synthesis_control_file",
+  ReadVersion = "3.30",
+  eof = TRUE, # TODO Why?
+  EmpiricalWAA = 0, 
+  N_GP = n_morphs, # Number of growth patterns (aka morphs)
+  N_platoon = n_platoons, # Number of platoons within a morph
+  recr_dist_method = 4, # Recruitment distribution 4 = no parameters
+  recr_global_area = 1,
+  recr_dist_read = 1,
+  recr_dist_inx = 0,
+  recr_dist_pattern = recr_dist_pattern, # TODO Consider
+  N_Block_Designs = 0,
+  blocks_per_pattern = NULL,
+  Block_Design = NULL,
+  time_vary_adjust_method = 1, # TODO Check
+  time_vary_auto_generation = time_vary_auto_generation, # TODO
+  natM_type = 0, # 0 = a single parameter
+  GrowthModel = 1, # 1 = von Bertalanffy (3 parameters)
+  Growth_Age_for_L1 = 0, # TODO Check
+  Growth_Age_for_L2 = 40, # TODO Check
+  Exp_Decay = -999, # TODO Check
+  Growth_Placeholder = 0, # TODO Check
+  N_natMparms = 1,# TODO Check
+  SD_add_to_LAA = 0, # TODO Check
+  CV_Growth_Pattern = 0, # TODO Check
+  maturity_option = 3, # 3 = read maturity-at-age for each female morph
+  Age_Maturity = age_at_maturity, # TODO
+  First_Mature_Age = first_mature_age, # TODO
+  fecundity_option = 4, # TODO Check 4 gives fecundity = a + b * L
+  hermaphroditism_option = 0, # 0 = not used
+  parameter_offset_approach = 2, # TODO Check 2 gives M_male = M_f * exp(M_m)
+  MG_parms = mortality_growth_parameters, # TODO
+  MGparm_seas_effects = rep(0, n_seasons), # TODO Check
+  SR_function = sr_function,
+  Use_steep_init_equi = 1, # 1 = use steepness (h)
+  Sigma_R_FofCurvature = 0, # Option not implemented
+  SR_parms = sr_parameters,
+  do_recdev = 1, # 1 = deviation vector that sums to zero
+  MainRdevYrFirst = recdev_year_main_start,
+  MainRdevYrLast = recdev_year_main_end,
+  recdev_phase = recdev_phase,
+  recdev_adv = 0,
+  recdev_early_start = NULL, # TODO Check
+  recdev_early_phase = NULL, # TODO Check
+  Fcast_recr_phase = NULL, # TODO Check
+  lambda4Fcast_recr_like = NULL, # TODO Check
+  last_early_yr_nobias_adj = NULL, # TODO Check
+  first_yr_fullbias_adj = NULL, # TODO Check
+  last_yr_fullbias_adj = NULL, # TODO Check
+  first_recent_yr_nobias_adj = NULL, # TODO Check
+  max_bias_adj = NULL, # TODO Check
+  period_of_cycles_in_recr = NULL, # TODO Check
+  min_rec_dev = NULL, # TODO Check
+  max_rec_dev = NULL, # TODO Check
+  N_Read_recdevs = NULL, # TODO Check
+  F_ballpark = 0.05,
+  F_ballpark_year = -1920, # TODO Check
+  F_Method = 3, # TODO Check - Why not recommended 4?
+  maxF = maximum_f_value,
+  F_iter = 3, # TODO Check
+  Q_options = Q_options,
+  Q_parms = Q_parameters,
+  size_selex_types = size_selex_types,
+  age_selex_types = age_selex_types,
+  size_selex_parms = size_selex_parameters,
+  age_selex_parms = age_selex_parameters,
+  Use_2D_AR1_selectivity = 0,
+  TG_custom = 0, # TODO Check
+  DoVar_adjust = 1, # TODO Check
+  Variance_adjustment_list = var_adjustment,
+  maxlambdaphase = 1,
+  sd_offset = 0,
+  lambdas = NULL,
+  N_lambdas = 0,
+  more_stddev_reporting = 0,
+  stddev_reporting_specs = NULL,
+  stddev_reporting_selex = NULL,
+  stddev_reporting_growth = NULL,
+  stddev_reporting_N_at_A = NULL
 )
+
+# Write
+# SS_writectl(control, file.path(path, "control.ss"), overwrite = TRUE)
 
 # Data -------------------------------------------------------------------------
 
@@ -183,16 +299,16 @@ dat <- list(
   type = "Stock_Synthesis_data_file",
   ReadVersion = "3.30",
   Comments = NULL,
-  styr = 1954, # TODO Check Start year
-  endyr = 2023, # End year
-  nseas = 1, # TODO Consider
-  months_per_seas = 12, # TODO Consider
-  Nsubseasons = 2, # TODO Consider Minimum 2 (and even)
-  spawn_month = 1, # TODO Consider
-  Nsexes = 2, # 2 = two sex, use fraction female in control file
-  Nages = n_ages, # Value of plus group; ages start at 0
-  N_areas = 1, # Number of areas
-  Nfleets = n_fleets, # TODO Check Total number of fishing and survey fleets
+  styr = year_start,
+  endyr = year_end, 
+  nseas = n_seasons,
+  months_per_seas = months_per_season,
+  Nsubseasons = n_subseasons,
+  spawn_month = month_spawn,
+  Nsexes = n_sexes,
+  Nages = n_ages,
+  N_areas = n_areas,
+  Nfleets = n_fleets, 
   fleetinfo = fleet_info, 
   fleetnames = fleet_names,
   surveytiming = fleet_timing,
@@ -203,22 +319,21 @@ dat <- list(
   CPUE = cpue,
   N_discard_fleets = 0, # TODO Consider
   use_meanbodywt = 0, # TODO Consider
-  lbin_method = 2, # 2 = generate from bin width min max
-  binwidth = bin_size,
-  minimum_size = bin_min,
-  maximum_size = bin_max,
-  use_lencomp = 1, # TODO Consider 
-  len_info = length_info, # TODO
-  N_lbins = n_bins,
-  lbin_vector = bins,
+  lbin_method = length_bin_method,
+  binwidth = length_bin_size,
+  minimum_size = length_bin_min,
+  maximum_size = length_bin_max,
+  use_lencomp = use_length_composition,
+  len_info = length_info,
+  N_lbins = n_length_bins,
+  lbin_vector = length_bins,
   lencomp = lengths,
-  N_agebins = 0,
-  agebin_vector = NULL,
-  N_ageerror_definitions = NULL,
-  ageerror = NULL,
-  age_info = NULL,
-  Lbin_method = NULL, # TODO Check
-  agecomp = NULL,
+  N_agebins = n_age_bins,
+  # agebin_vector = NULL,
+  # N_ageerror_definitions = NULL,
+  # ageerror = NULL,
+  # age_info = NULL,
+  # agecomp = NULL,
   use_MeanSize_at_Age_obs = 0, # TODO Check
   MeanSize_at_Age_obs = NULL,
   N_environ_variables = 0, # TODO Consider
@@ -228,18 +343,23 @@ dat <- list(
   morphcomp_data = 0,
   use_selectivity_priors = 0,
   eof = TRUE,
-  spawn_seas = 1, # TODO Consider
+  spawn_seas = season_spawn,
   Nfleet = n_fleets_fishery, # Fishery
   Nsurveys = n_fleets_survey, # Survey
-  fleetinfo1 = fleet_info_01,
-  fleetinfo2 = fleet_info_02,
+  # fleetinfo1 = fleet_info_01,
+  # fleetinfo2 = fleet_info_02,
   N_meanbodywt = 0,
-  comp_tail_compression = comp_tail_compression, # TODO
-  add_to_comp = add_to_comp, # TODO
-  max_combined_lbin = max_combined_bin, # TODO
-  N_lbinspop = n_bins_pop, # TODO
-  lbin_vector_pop = bins_pop
+  # comp_tail_compression = NULL,
+  # add_to_comp = NULL,
+  # max_combined_lbin = max_combined_bin, # TODO
+  N_MeanSize_at_Age_obs = 0 # TODO Check
+  # N_lbinspop = n_bins_pop, # TODO
+  # lbin_vector_pop = bins_pop
 )
+
+# Write
+# SS_writedat(dat, file.path(path, "data.ss"), overwrite = TRUE)
+# d <- SS_readdat(file.path(path, "data.ss"))
 
 # Forecast ---------------------------------------------------------------------
 
