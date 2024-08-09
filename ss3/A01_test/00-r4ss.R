@@ -103,52 +103,102 @@ mcmc_thin <- 5
 # Depletion basis: 0 = skip; 1 = B0; 2 = BMSY
 depletion_basis <- 1
 
-
-
 # Control inputs ---------------------------------------------------------------
 
 # TODO Continue editing control inputs section
+# TODO Consider growth age for L2
+# TODO Age at maturity
+# TODO Consider age first mature
+# TODO Consider fecundity option
+# TODO Morality and growth parameters
+# TODO S-R parameters
+# TODO Recruitment deviation arguments
+# TODO Consider fishing iterations
+# TODO Catchability
+# TODO Selectivity
+# TODO Variance adjustment
+# TODO Check lambdas
 
+# SS3 name: Growth
+# Manual page: 95
+growth_model <- 1 # 1 = von Bertalanffy (3 parameters)
+growth_age_l1 <- 0
+growth_age_l2 <- 40
+growth_exp_decay <- -999 # -999 = replicate simpler option
+growth_cv_pattern <- 0
 
-# Control
-max_combined_bin <- NULL # TODO
-bins_pop <- seq(10, 115, 5)
-n_bins_pop <- length(bins_pop)
-# Ages
-n_ages <- 70 # Cp. n_age
-age_at_maturity <- NULL # TODO
-first_mature_age <- 18 # TODO Consider
-# Recruitment
-recr_dist_pattern <- NULL # TODO (control)
+# SS3 name: Maturity-Fecundity
+# Manual page: 100
+maturity_option <- 3 # 3 = read maturity-at-age for each female morph
+age_at_maturity <- NULL 
+age_first_mature <- 18 # Overriden if maturity option is 3 or 4
+fecundity_option <- 4 # 4 gives fecundity = a + b * L
 
-time_vary_auto_generation <- NULL # TODO (control)
+# SS3 name: Natural Mortality and Growth Parameter Offset Method
+# Manual page: 103
+parameter_offset <- 2 # 2 gives M_m = M_f * exp(M_offset)
 
-recdev_year_main_start <- NULL # TODO
-recdev_year_main_end <- NULL # TODO
-recdev_phase <- -3 # TODO Check
+# SS3 name: Read Biology Parameters
+# Manual page: 106
+mortality_growth_parameters <- NULL 
+mortality_growth_seasonal <- rep(0L, 10) # Manual page: 112 (top)
 
-# Mortality and growth
-mortality_growth_parameters <- NULL # TODO
+# SS3 name: Spawner-Recruitment
+# Manual page: 112
+sr_function <- 7 # 7 = shark survivorship function recruits <= production
+use_steepness <- 1 # 1 = use steepness (h)
 
-# SR
-sr_function <- 7 # 7 = survivorship function recruits <= production
-sr_parameters <- NULL # TODO
+# SS3 name: Spawner-Recruitment Parameter Setup
+# Manual page: 117
+sr_parameters <- NULL
 
-# Fishing
-maximum_f_value <- NULL # TODO
+# SS3 name: Recruitment Deviation Setup
+# Manual page: 119
+rec_dev_do <- 1 # 1 = use deviation vector that sums to zero
+rec_dev_year_main_start <- NULL 
+rec_dev_year_main_end <- NULL
+rec_dev_phase <- -3
+rec_dev_advanced <- 0
 
-# Catchability
-Q_options <- NULL # TODO
-Q_parameters <- NULL # TODO
+# SS3 name: Fishing Mortality Method
+# Manual page: 126
+fishing_method <- 3 # 1 = Pope's; 2 = Baranov; 3 = Hybrid; 4 = Fleet specific
+fishing_ballpark <- 0.05
+fishing_ballpark_year <- -1920 # Negative values disable fishing ballpark
+fishing_maximum <- 4 # 4 recommended for fishing methods 2 and 3
+fishing_iterations <- 4 # 3 for one fleet; 4 in between; 5 many fleets
 
-# Selectivity
-size_selex_types <- NULL # TODO
-age_selex_types <- NULL # TODO
-size_selex_parameters <- NULL # TODO
-age_selex_parameters <- NULL # TODO
+# SS3 name: Catchability
+# Manual page: 130
+catchability_option <- NULL
+catchability_parameters <- NULL
 
-var_adjustment <- NULL # TODO
+# SS3 name: Selectivity and Discard
+# Manual page: 134
+selectivity_size_types <- NULL
+selectivity_size_parameters <- NULL
+selectivity_age_types <- NULL
+selectivity_age_parameters <- NULL
 
+# SS3 name: Variance Adjustment Factors
+# Manual page: 161
+variance_adjustment_option <- NULL
+variance_adjustment_factors <- NULL
+
+# SS3 name: Lambdas (Emphasis Factors)
+# Manual page: 163
+lambda_phase_max <- 1
+lambda_offset_sd <- 0
+lambdas <- NULL
+n_lambdas <- 0
+
+# SS3 name: Controls for Variance of Derived Quantities
+# Manual page: 166
+sd_reporting_additional <- 0
+
+# Forecast inputs --------------------------------------------------------------
+
+# TODO Continue from here
 
 
 # Starter ----------------------------------------------------------------------
@@ -197,96 +247,96 @@ starter <- list(
 # Control ----------------------------------------------------------------------
 
 control <- list(
-  warnings = "", # TODO Check
+  warnings = "",
   Comments = NULL,
-  nseas = n_seasons,
-  N_areas = n_areas,
-  Nages = n_ages,
-  Nsexes = n_sexes,
-  Npopbins = n_bins_pop,
-  Nfleets = n_fleets,
-  Do_AgeKey = 0,
-  fleetnames = fleet_names,
+  # nseas = n_seasons,
+  # N_areas = n_areas,
+  # Nages = n_ages,
+  # Nsexes = n_sexes,
+  # Npopbins = n_bins_pop,
+  # Nfleets = n_fleets,
+  # Do_AgeKey = 0,
+  # fleetnames = fleet_names,
   sourcefile = file.path(path, "control.ss"),
   type = "Stock_Synthesis_control_file",
   ReadVersion = "3.30",
-  eof = TRUE, # TODO Why?
-  EmpiricalWAA = 0, 
+  eof = TRUE,
+  EmpiricalWAA = 0, # Whether to read wtatage.ss
   N_GP = n_morphs, # Number of growth patterns (aka morphs)
   N_platoon = n_platoons, # Number of platoons within a morph
   recr_dist_method = 4, # Recruitment distribution 4 = no parameters
   recr_global_area = 1,
-  recr_dist_read = 1,
-  recr_dist_inx = 0,
-  recr_dist_pattern = recr_dist_pattern, # TODO Consider
+  # recr_dist_read = 1,
+  # recr_dist_inx = 0,
+  # recr_dist_pattern = NULL,
   N_Block_Designs = 0,
-  blocks_per_pattern = NULL,
-  Block_Design = NULL,
-  time_vary_adjust_method = 1, # TODO Check
-  time_vary_auto_generation = time_vary_auto_generation, # TODO
-  natM_type = 0, # 0 = a single parameter
-  GrowthModel = 1, # 1 = von Bertalanffy (3 parameters)
-  Growth_Age_for_L1 = 0, # TODO Check
-  Growth_Age_for_L2 = 40, # TODO Check
-  Exp_Decay = -999, # TODO Check
-  Growth_Placeholder = 0, # TODO Check
-  N_natMparms = 1,# TODO Check
-  SD_add_to_LAA = 0, # TODO Check
-  CV_Growth_Pattern = 0, # TODO Check
-  maturity_option = 3, # 3 = read maturity-at-age for each female morph
-  Age_Maturity = age_at_maturity, # TODO
-  First_Mature_Age = first_mature_age, # TODO
-  fecundity_option = 4, # TODO Check 4 gives fecundity = a + b * L
+  # blocks_per_pattern = NULL,
+  # Block_Design = NULL,
+  time_vary_adjust_method = 1, # 1 = warning relative to base parameter bounds
+  time_vary_auto_generation = 0, # 0 = no time-varying parameters expected
+  natM_type = 0, # 0 = a single parameter therefore no additional controls
+  GrowthModel = growth_model, # 1 = von Bertalanffy (3 parameters)
+  Growth_Age_for_L1 = growth_age_l1,
+  Growth_Age_for_L2 = growth_age_l2,
+  Exp_Decay = growth_exp_decay,
+  Growth_Placeholder = 0, # 0 = default; not implemented
+  # N_natMparms = 1,
+  SD_add_to_LAA = 0, # 0 = recommended value
+  CV_Growth_Pattern = growth_cv_pattern,
+  maturity_option = maturity_option,
+  Age_Maturity = age_at_maturity,
+  First_Mature_Age = age_first_mature,
+  fecundity_option = fecundity_option,
   hermaphroditism_option = 0, # 0 = not used
-  parameter_offset_approach = 2, # TODO Check 2 gives M_male = M_f * exp(M_m)
-  MG_parms = mortality_growth_parameters, # TODO
-  MGparm_seas_effects = rep(0, n_seasons), # TODO Check
+  parameter_offset_approach = parameter_offset,
+  MG_parms = mortality_growth_parameters,
+  MGparm_seas_effects = mortality_growth_seasonal,
   SR_function = sr_function,
-  Use_steep_init_equi = 1, # 1 = use steepness (h)
+  Use_steep_init_equi = use_steepness, # 1 = use steepness (h)
   Sigma_R_FofCurvature = 0, # Option not implemented
   SR_parms = sr_parameters,
-  do_recdev = 1, # 1 = deviation vector that sums to zero
-  MainRdevYrFirst = recdev_year_main_start,
-  MainRdevYrLast = recdev_year_main_end,
-  recdev_phase = recdev_phase,
-  recdev_adv = 0,
-  recdev_early_start = NULL, # TODO Check
-  recdev_early_phase = NULL, # TODO Check
-  Fcast_recr_phase = NULL, # TODO Check
-  lambda4Fcast_recr_like = NULL, # TODO Check
-  last_early_yr_nobias_adj = NULL, # TODO Check
-  first_yr_fullbias_adj = NULL, # TODO Check
-  last_yr_fullbias_adj = NULL, # TODO Check
-  first_recent_yr_nobias_adj = NULL, # TODO Check
-  max_bias_adj = NULL, # TODO Check
-  period_of_cycles_in_recr = NULL, # TODO Check
-  min_rec_dev = NULL, # TODO Check
-  max_rec_dev = NULL, # TODO Check
-  N_Read_recdevs = NULL, # TODO Check
-  F_ballpark = 0.05,
-  F_ballpark_year = -1920, # TODO Check
-  F_Method = 3, # TODO Check - Why not recommended 4?
-  maxF = maximum_f_value,
-  F_iter = 3, # TODO Check
-  Q_options = Q_options,
-  Q_parms = Q_parameters,
-  size_selex_types = size_selex_types,
-  age_selex_types = age_selex_types,
-  size_selex_parms = size_selex_parameters,
-  age_selex_parms = age_selex_parameters,
-  Use_2D_AR1_selectivity = 0,
-  TG_custom = 0, # TODO Check
-  DoVar_adjust = 1, # TODO Check
-  Variance_adjustment_list = var_adjustment,
-  maxlambdaphase = 1,
-  sd_offset = 0,
-  lambdas = NULL,
-  N_lambdas = 0,
-  more_stddev_reporting = 0,
-  stddev_reporting_specs = NULL,
-  stddev_reporting_selex = NULL,
-  stddev_reporting_growth = NULL,
-  stddev_reporting_N_at_A = NULL
+  do_recdev = rec_dev_do,
+  MainRdevYrFirst = rec_dev_year_main_start,
+  MainRdevYrLast = rec_dev_year_main_end,
+  recdev_phase = rec_dev_phase,
+  recdev_adv = rec_dev_advanced,
+  # recdev_early_start = NULL,
+  # recdev_early_phase = NULL,
+  # Fcast_recr_phase = NULL,
+  # lambda4Fcast_recr_like = NULL,
+  # last_early_yr_nobias_adj = NULL,
+  # first_yr_fullbias_adj = NULL,
+  # last_yr_fullbias_adj = NULL,
+  # first_recent_yr_nobias_adj = NULL,
+  # max_bias_adj = NULL,
+  # period_of_cycles_in_recr = NULL,
+  # min_rec_dev = NULL,
+  # max_rec_dev = NULL,
+  # N_Read_recdevs = NULL,
+  F_ballpark = fishing_ballpark,
+  F_ballpark_year = fishing_ballpark_year,
+  F_Method = fishing_method,
+  maxF = fishing_maximum,
+  F_iter = fishing_iterations,
+  Q_options = catchability_option,
+  Q_parms = catchability_parameters,
+  size_selex_types = selectivity_size_types,
+  age_selex_types = selectivity_age_types,
+  size_selex_parms = selectivity_size_parameters,
+  age_selex_parms = selectivity_age_parameters,
+  Use_2D_AR1_selectivity = 0, # Manual page: 156
+  # TG_custom = 0,
+  DoVar_adjust = variance_adjustment_option,
+  Variance_adjustment_list = variance_adjustment_factors,
+  maxlambdaphase = lambda_phase_max,
+  sd_offset = lambda_offset_sd,
+  lambdas = lambdas,
+  N_lambdas = n_lambdas,
+  more_stddev_reporting = sd_reporting_additional,
+  # stddev_reporting_specs = NULL,
+  # stddev_reporting_selex = NULL,
+  # stddev_reporting_growth = NULL,
+  # stddev_reporting_N_at_A = NULL
 )
 
 # Write
@@ -363,9 +413,11 @@ dat <- list(
 
 # Forecast ---------------------------------------------------------------------
 
+# TODO Continue from here
+
 forecast <- list(
-  warnings = "", # TODO Why?
-  SSversion = 3.3,
+  warnings = "",
+  SSversion = "3.30",
   sourcefile = file.path(path, "forecast.ss"),
   type = "Stock_Synthesis_forecast_file",
   benchmarks = 1, # 0 = omit; 1 = F_SPR, F_B_target, and F_MSY
