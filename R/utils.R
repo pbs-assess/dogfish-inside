@@ -11,6 +11,3 @@ fleet <- function (x = NULL) {
     match(x, .d)
   }
 }
-
-
-
