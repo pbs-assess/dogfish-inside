@@ -34,8 +34,8 @@ dc <- readRDS("data/generated/catch-commercial.rds") |>
     total_kt = sum(landed_kt + discarded_kt),
     .groups = "drop"
   ) |>
-  dplyr::mutate(value = total_kt) |>
-  dplyr::select(year, fleet, value) |>
+  dplyr::mutate(catch = total_kt) |>
+  dplyr::select(year, fleet, catch) |>
   dplyr::arrange(fleet, year)
 
 # Survey catch
@@ -48,8 +48,8 @@ ds <- readRDS("data/generated/catch-survey.rds") |>
     total_kpc = 1e-3 * sum(total_pc),
     .groups = "drop"
   ) |>
-  dplyr::mutate(value = total_kpc) |>
-  dplyr::select(year, fleet, value) |>
+  dplyr::mutate(catch = total_kpc) |>
+  dplyr::select(year, fleet, catch) |>
   dplyr::arrange(fleet, year)
 
 # DF Survey?
@@ -63,16 +63,17 @@ ds <- readRDS("data/generated/catch-survey.rds") |>
 # Define catch -----------------------------------------------------------------
 
 d <- dplyr::bind_rows(dc, ds) |>
-  dplyr::mutate(value = round(value, 3)) |>
-  dplyr::mutate(se = 0.01) |>
+  dplyr::mutate(catch = round(catch, 3)) |>
+  dplyr::mutate(catch_se = 0.01) |>
   dplyr::mutate(season = 1) |>
-  dplyr::filter(value > 0) |>
-  dplyr::select(year, season, fleet, value, se) |>
-  dplyr::arrange(fleet, year)
+  dplyr::filter(catch > 0) |>
+  dplyr::select(year, season, fleet, catch, catch_se) |>
+  dplyr::arrange(fleet, year) |>
+  as.data.frame()
 
 # Write data -------------------------------------------------------------------
 
-write.csv(d, file = "data/ss3/ss3-catch.csv", row.names = FALSE)
+saveRDS(d, file = "data/ss3/catch.rds")
 
 # Plot catch -------------------------------------------------------------------
 
