@@ -35,11 +35,11 @@ n_platoons <- 1
 
 # Data inputs ------------------------------------------------------------------
 
-# TODO Replace NULL values
 # TODO Consider bottom trawl cpue
-# TODO Why se_log for outside cpue
-# TODO Update month in cpue
-# TODO Check length month
+# TODO Consider se_log for outside cpue
+# TODO Consider month in cpue
+# TODO Consider discard fleets
+# TODO Consider length month
 
 # SS3 name: Fleet Definition
 # r4ss name: fleetinfo
@@ -69,6 +69,10 @@ colnames(catch)[2] <- c("seas") # SS_writedat balks at "season"
 # Manual page: 48
 cpue_info <- readRDS("data/ss3/cpue-info.rds")
 cpue <- readRDS("data/ss3/index.rds")
+
+# SS3 name:
+# Manual page:
+n_fleets_discard <- 0
 
 # SS3 name: Population Length Bins
 # Manual page: 55
@@ -105,19 +109,18 @@ depletion_basis <- 1
 
 # Control inputs ---------------------------------------------------------------
 
-# TODO Continue editing control inputs section
 # TODO Consider growth age for L2
-# TODO Age at maturity
 # TODO Consider age first mature
 # TODO Consider fecundity option
-# TODO Morality and growth parameters
-# TODO S-R parameters
-# TODO Recruitment deviation arguments
 # TODO Consider fishing iterations
-# TODO Catchability
-# TODO Selectivity
-# TODO Variance adjustment
-# TODO Check lambdas
+# TODO Consider lambdas
+# TODO Consider maturity at age - outside appears to divide by 2
+# TODO Consider morality and growth parameters
+# TODO Consider sr parameters
+# TODO Consider recruitment deviation arguments
+# TODO Update variance adjustment factors
+# TODO Update selectivity
+# TODO Update catchability
 
 # SS3 name: Growth
 # Manual page: 95
@@ -130,8 +133,8 @@ growth_cv_pattern <- 0
 # SS3 name: Maturity-Fecundity
 # Manual page: 100
 maturity_option <- 3 # 3 = read maturity-at-age for each female morph
-age_at_maturity <- NULL 
-age_first_mature <- 18 # Overriden if maturity option is 3 or 4
+maturity_at_age <- readRDS("data/ss3/maturity.rds")
+maturity_first_age <- 18 # Overriden if maturity option is 3 or 4
 fecundity_option <- 4 # 4 gives fecundity = a + b * L
 
 # SS3 name: Natural Mortality and Growth Parameter Offset Method
@@ -140,17 +143,23 @@ parameter_offset <- 2 # 2 gives M_m = M_f * exp(M_offset)
 
 # SS3 name: Read Biology Parameters
 # Manual page: 106
-mortality_growth_parameters <- NULL 
+mortality_growth_parameters <- readRDS("data/ss3/parameters.rds") |>
+  dplyr::filter(parameters == "MG") |>
+  dplyr::select(-parameters) |>
+  as.data.frame()
 mortality_growth_seasonal <- rep(0L, 10) # Manual page: 112 (top)
 
 # SS3 name: Spawner-Recruitment
 # Manual page: 112
-sr_function <- 7 # 7 = shark survivorship function recruits <= production
+stock_recruitment_option <- 7 # 7 = shark survivorship function
 use_steepness <- 1 # 1 = use steepness (h)
 
 # SS3 name: Spawner-Recruitment Parameter Setup
 # Manual page: 117
-sr_parameters <- NULL
+stock_recruitment_parameters <- readRDS("data/ss3/parameters.rds") |>
+  dplyr::filter(parameters == "SR") |>
+  dplyr::select(-parameters) |>
+  as.data.frame()
 
 # SS3 name: Recruitment Deviation Setup
 # Manual page: 119
@@ -170,20 +179,47 @@ fishing_iterations <- 4 # 3 for one fleet; 4 in between; 5 many fleets
 
 # SS3 name: Catchability
 # Manual page: 130
-catchability_option <- NULL
-catchability_parameters <- NULL
+catchability_option <- tibble::tribble(
+  ~fleet, ~link, ~link_info, ~extra_se, ~biasadj, ~float,
+       4,     1,          0,         0,        0,      1 # HBLL
+) |>
+  as.data.frame()
+catchability_parameters <- readRDS("data/ss3/parameters.rds") |>
+  dplyr::filter(parameters == "Q") |>
+  dplyr::select(-parameters) |>
+  as.data.frame()
 
 # SS3 name: Selectivity and Discard
 # Manual page: 134
-selectivity_size_types <- NULL
-selectivity_size_parameters <- NULL
-selectivity_age_types <- NULL
+selectivity_size_types <- tibble::tibble(
+  pattern = rep(24, n_fleets),
+  discard = 0,
+  male = 0,
+  special = 0
+) |>
+  as.data.frame()
+selectivity_size_parameters <- readRDS("data/ss3/parameters.rds") |>
+  dplyr::filter(parameters == "SS") |>
+  dplyr::select(-parameters) |>
+  as.data.frame()
+selectivity_age_types <- tibble::tibble(
+  pattern = rep(0, n_fleets),
+  discard = 0,
+  male = 0,
+  special = 0
+) |>
+  as.data.frame()
 selectivity_age_parameters <- NULL
 
 # SS3 name: Variance Adjustment Factors
 # Manual page: 161
-variance_adjustment_option <- NULL
-variance_adjustment_factors <- NULL
+variance_adjustment_option <- 1
+variance_adjustment_factors <- tibble::tibble(
+  data_type = 4,
+  fleet = seq_len(n_fleets),
+  value = 1
+) |>
+  as.data.frame()
 
 # SS3 name: Lambdas (Emphasis Factors)
 # Manual page: 163
@@ -198,8 +234,27 @@ sd_reporting_additional <- 0
 
 # Forecast inputs --------------------------------------------------------------
 
-# TODO Continue from here
+# TODO Consider SPR target
+# TODO Consider relative biomass target
+# TODO Consider benchmark years
+# TODO Consider benchmark basis
+# TODO Consider forecast option
+# TODO Consider number of forecast years
 
+# SS3 name: Benchmark Calculations
+# Manual page: 20, 31
+reference_points <- 1 # 0 = omit; 1 = F_SPR, F_B_target, and F_MSY
+msy_method <- 2 # 1 = F_SPR as proxy; 2 = F_MSY
+spr_target <- 0.4
+relative_biomass_target <- 0.4
+benchmark_years <- rep(0, 10)
+benchmark_basis <- 1
+
+# SS3 name: Forecast option
+# Manual page: 22
+forecast_option <- 0
+n_forecast_years <- 1
+fishing_multiplier <- 1
 
 # Starter ----------------------------------------------------------------------
 
@@ -242,21 +297,21 @@ starter <- list(
 )
 
 # Write
-# SS_writestarter(starter, file.path(path, "starter.ss"), overwrite = TRUE)
+# SS_writestarter(starter, path, overwrite = TRUE)
 
 # Control ----------------------------------------------------------------------
 
 control <- list(
   warnings = "",
   Comments = NULL,
-  # nseas = n_seasons,
-  # N_areas = n_areas,
-  # Nages = n_ages,
-  # Nsexes = n_sexes,
-  # Npopbins = n_bins_pop,
-  # Nfleets = n_fleets,
-  # Do_AgeKey = 0,
-  # fleetnames = fleet_names,
+  nseas = n_seasons,
+  N_areas = n_areas,
+  Nages = n_ages,
+  Nsexes = n_sexes,
+  Npopbins = n_length_bins,
+  Nfleets = n_fleets,
+  Do_AgeKey = 0,
+  fleetnames = fleet_names,
   sourcefile = file.path(path, "control.ss"),
   type = "Stock_Synthesis_control_file",
   ReadVersion = "3.30",
@@ -284,17 +339,17 @@ control <- list(
   SD_add_to_LAA = 0, # 0 = recommended value
   CV_Growth_Pattern = growth_cv_pattern,
   maturity_option = maturity_option,
-  Age_Maturity = age_at_maturity,
-  First_Mature_Age = age_first_mature,
+  Age_Maturity = maturity_at_age,
+  First_Mature_Age = maturity_first_age,
   fecundity_option = fecundity_option,
   hermaphroditism_option = 0, # 0 = not used
   parameter_offset_approach = parameter_offset,
   MG_parms = mortality_growth_parameters,
   MGparm_seas_effects = mortality_growth_seasonal,
-  SR_function = sr_function,
+  SR_function = stock_recruitment_option,
   Use_steep_init_equi = use_steepness, # 1 = use steepness (h)
   Sigma_R_FofCurvature = 0, # Option not implemented
-  SR_parms = sr_parameters,
+  SR_parms = stock_recruitment_parameters,
   do_recdev = rec_dev_do,
   MainRdevYrFirst = rec_dev_year_main_start,
   MainRdevYrLast = rec_dev_year_main_end,
@@ -325,14 +380,14 @@ control <- list(
   size_selex_parms = selectivity_size_parameters,
   age_selex_parms = selectivity_age_parameters,
   Use_2D_AR1_selectivity = 0, # Manual page: 156
-  # TG_custom = 0,
+  TG_custom = 0,
   DoVar_adjust = variance_adjustment_option,
   Variance_adjustment_list = variance_adjustment_factors,
   maxlambdaphase = lambda_phase_max,
   sd_offset = lambda_offset_sd,
   lambdas = lambdas,
   N_lambdas = n_lambdas,
-  more_stddev_reporting = sd_reporting_additional,
+  more_stddev_reporting = sd_reporting_additional
   # stddev_reporting_specs = NULL,
   # stddev_reporting_selex = NULL,
   # stddev_reporting_growth = NULL,
@@ -367,8 +422,8 @@ dat <- list(
   catch = catch,
   CPUEinfo = cpue_info,
   CPUE = cpue,
-  N_discard_fleets = 0, # TODO Consider
-  use_meanbodywt = 0, # TODO Consider
+  N_discard_fleets = n_fleets_discard,
+  use_meanbodywt = 0,
   lbin_method = length_bin_method,
   binwidth = length_bin_size,
   minimum_size = length_bin_min,
@@ -384,9 +439,9 @@ dat <- list(
   # ageerror = NULL,
   # age_info = NULL,
   # agecomp = NULL,
-  use_MeanSize_at_Age_obs = 0, # TODO Check
-  MeanSize_at_Age_obs = NULL,
-  N_environ_variables = 0, # TODO Consider
+  use_MeanSize_at_Age_obs = 0,
+  # MeanSize_at_Age_obs = NULL,
+  N_environ_variables = 0,
   N_sizefreq_methods_rd = 0,
   N_sizefreq_methods = 0,
   do_tags = 0,
@@ -394,16 +449,16 @@ dat <- list(
   use_selectivity_priors = 0,
   eof = TRUE,
   spawn_seas = season_spawn,
-  Nfleet = n_fleets_fishery, # Fishery
-  Nsurveys = n_fleets_survey, # Survey
+  Nfleet = n_fleets_fishery,
+  Nsurveys = n_fleets_survey
   # fleetinfo1 = fleet_info_01,
   # fleetinfo2 = fleet_info_02,
-  N_meanbodywt = 0,
+  # N_meanbodywt = 0,
   # comp_tail_compression = NULL,
   # add_to_comp = NULL,
-  # max_combined_lbin = max_combined_bin, # TODO
-  N_MeanSize_at_Age_obs = 0 # TODO Check
-  # N_lbinspop = n_bins_pop, # TODO
+  # max_combined_lbin = max_combined_bin,
+  # N_MeanSize_at_Age_obs = 0,
+  # N_lbinspop = n_bins_pop,
   # lbin_vector_pop = bins_pop
 )
 
@@ -413,44 +468,44 @@ dat <- list(
 
 # Forecast ---------------------------------------------------------------------
 
-# TODO Continue from here
-
 forecast <- list(
   warnings = "",
   SSversion = "3.30",
   sourcefile = file.path(path, "forecast.ss"),
   type = "Stock_Synthesis_forecast_file",
-  benchmarks = 1, # 0 = omit; 1 = F_SPR, F_B_target, and F_MSY
-  MSY = 2, # 1 = F_SPR as proxy; 2 = F_MSY
-  SPRtarget = 0.4, # TODO Why not 0.45? See Manual
-  Btarget = 0.4, # TODO Why this value?
-  Bmark_years = rep(0, 10), # TODO What benchmark conditional on?
-  Bmark_relF_Basis = 1, # TODO What? 1 = year range; 2 = relF same as Forecast
-  Forecast = 0, # TODO Why? 0 = single forecast year calculated
-  Nforecastyrs = NULL, # TODO Check
-  F_scalar = NULL, # F scalar/multiplier
-  Fcast_years = NULL, # TODO Check
-  Fcast_selex = NULL, # TODO Check
-  ControlRuleMethod = NULL,
-  BforconstantF = NULL,
-  BfornoF = NULL,
-  Flimitfraction = NULL,
-  N_forecast_loops = NULL,
-  First_forecast_loop_with_stochastic_recruitment = NULL,
-  fcast_rec_option = NULL,
-  fcast_rec_val = NULL,
-  Fcast_loop_control_5 = NULL,
-  FirstYear_for_caps_and_allocations = NULL,
-  stddev_of_log_catch_ratio = NULL,
-  Do_West_Coast_gfish_rebuilder_output = NULL,
-  Ydecl = NULL,
-  Yinit = NULL,
-  fleet_relative_F = NULL,
-  basis_for_fcast_catch_tuning = NULL,
-  N_allocation_groups = NULL,
-  InputBasis = NULL,
-  eof = NULL
+  benchmarks = reference_points,
+  MSY = msy_method,
+  SPRtarget = spr_target,
+  Btarget = relative_biomass_target,
+  Bmark_years = benchmark_years,
+  Bmark_relF_Basis = benchmark_basis,
+  Forecast = forecast_option,
+  Nforecastyrs = n_forecast_years,
+  F_scalar = fishing_multiplier,
+  # Fcast_years = NULL,
+  # Fcast_selex = NULL,
+  ControlRuleMethod = 0 # 0 = none
+  # BforconstantF = NULL,
+  # BfornoF = NULL,
+  # Flimitfraction = NULL,
+  # N_forecast_loops = NULL,
+  # First_forecast_loop_with_stochastic_recruitment = NULL,
+  # fcast_rec_option = NULL,
+  # fcast_rec_val = NULL,
+  # Fcast_loop_control_5 = NULL,
+  # FirstYear_for_caps_and_allocations = NULL,
+  # stddev_of_log_catch_ratio = NULL,
+  # Do_West_Coast_gfish_rebuilder_output = NULL,
+  # Ydecl = NULL,
+  # Yinit = NULL,
+  # fleet_relative_F = NULL,
+  # basis_for_fcast_catch_tuning = NULL,
+  # N_allocation_groups = NULL,
+  # InputBasis = NULL,
+  # eof = NULL
 )
+# Write
+# SS_writeforecast(forecast, path, "forecast.ss", overwrite = TRUE)
 
 # Build input ------------------------------------------------------------------
 
