@@ -122,6 +122,29 @@ depletion_basis <- 1
 # TODO Update selectivity
 # TODO Update catchability
 
+# SS3 name: Settlement Timing for Recruits and Distribution
+# Manual page: 85
+recruitment_distribution_method <- 4 # 4 = no parameters
+recruitment_global_area <- 1 # 1 = global (by area not implemented)
+n_recruitment_settlement <- 1 
+recruitment_distribution_unused <- 0 # Unused
+recruitment_distribution_pattern <- tibble::tibble(
+  growth_pattern = 1,
+  month = 1,
+  area = 1,
+  age_at_settlement = 0
+) |>
+  as.data.frame()
+
+# SS3 name: Auto-generation
+# Manual page: 91
+time_varying_adjust_method <- 1 # 1 = warning relative to base parameter bounds
+time_varying_auto_generation <- rep(0, 5) # 0 = no time-varying expected
+
+# SS3 name: Natural Mortality
+# Manual page: 92
+natural_mortality_option <- 0 # 0 = single parameter (no additional arguments)
+
 # SS3 name: Growth
 # Manual page: 95
 growth_model <- 1 # 1 = von Bertalanffy (3 parameters)
@@ -164,8 +187,8 @@ stock_recruitment_parameters <- readRDS("data/ss3/parameters.rds") |>
 # SS3 name: Recruitment Deviation Setup
 # Manual page: 119
 rec_dev_do <- 1 # 1 = use deviation vector that sums to zero
-rec_dev_year_main_start <- NULL 
-rec_dev_year_main_end <- NULL
+rec_dev_year_main_start <- 1954 
+rec_dev_year_main_end <- 2015
 rec_dev_phase <- -3
 rec_dev_advanced <- 0
 
@@ -319,17 +342,17 @@ control <- list(
   EmpiricalWAA = 0, # Whether to read wtatage.ss
   N_GP = n_morphs, # Number of growth patterns (aka morphs)
   N_platoon = n_platoons, # Number of platoons within a morph
-  recr_dist_method = 4, # Recruitment distribution 4 = no parameters
-  recr_global_area = 1,
-  # recr_dist_read = 1,
-  # recr_dist_inx = 0,
-  # recr_dist_pattern = NULL,
+  recr_dist_method = recruitment_distribution_method,
+  recr_global_area = recruitment_global_area,
+  recr_dist_read = n_recruitment_settlement,
+  recr_dist_inx = recruitment_distribution_unused,
+  recr_dist_pattern = recruitment_distribution_pattern,
   N_Block_Designs = 0,
   # blocks_per_pattern = NULL,
   # Block_Design = NULL,
-  time_vary_adjust_method = 1, # 1 = warning relative to base parameter bounds
-  time_vary_auto_generation = 0, # 0 = no time-varying parameters expected
-  natM_type = 0, # 0 = a single parameter therefore no additional controls
+  time_vary_adjust_method = time_varying_adjust_method,
+  time_vary_auto_generation = time_varying_auto_generation,
+  natM_type = natural_mortality_option,
   GrowthModel = growth_model, # 1 = von Bertalanffy (3 parameters)
   Growth_Age_for_L1 = growth_age_l1,
   Growth_Age_for_L2 = growth_age_l2,
