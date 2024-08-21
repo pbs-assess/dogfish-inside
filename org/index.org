@@ -1,0 +1,29 @@
+#+title: Inside Dogfish
+#+archive: ::* Archive
+
+* Tasks
+** todo Update input data [0/5]
+   - [ ] Include historical catch
+   - [ ] Exclude low reliability years
+   - [ ] Include other sources of catch
+   - [ ] Choose total/landed/discarded
+   - [ ] Update geostatistical index
+** todo Wrangle input data [/]
+** todo Update input files [/] 
+** todo Generate data figures [/]
+* Ideas
+* Archive
+
+** todo Check archiving locally [5/5]
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2024-08-21 Wed 12:26
+   :ARCHIVE_FILE: ~/github/dogfish-inside/org/index.org
+   :ARCHIVE_OLPATH: Tasks
+   :ARCHIVE_CATEGORY: index
+   :ARCHIVE_TODO: todo
+   :END:
+   - [X] Set org-archive-location locally by "#+archive: ::* Archive"
+   - [X] Use C-c C-c to update local settings
+   - [X] Start tree structure with todo subtrees
+   - [X] Mark tasks done
+   - [X] Use C-c C-x C-s (org-archive-subtree)
