@@ -3,8 +3,7 @@ library(dplyr)
 library(gfplot)
 library(ggplot2)
 library(tibble)
-# Source
-source("R/utils.R")
+library(tidyr)
 # Theme set
 ggplot2::theme_set(gfplot::theme_pbs())
 
@@ -14,7 +13,7 @@ ggplot2::theme_set(gfplot::theme_pbs())
 # - gfcatch::tidy_catch()
 # - https://github.com/pbs-assess/dogfish-assess/blob/main/analysis/utils.R
 
-d <- readRDS(here::here("data", "raw", "catch-commercial.rds")) |>
+d0 <- readRDS(here::here("data", "raw", "catch-commercial.rds")) |>
   dplyr::mutate(area = gfplot::assign_areas(major_stat_area_name, "4B")) |>
   dplyr::filter(!is.na(species_common_name), !is.na(year)) |>
   dplyr::mutate(
@@ -24,45 +23,108 @@ d <- readRDS(here::here("data", "raw", "catch-commercial.rds")) |>
       c("MIDWATER TRAWL")            ~ "Midwater trawl",
       c("HOOK AND LINE", "LONGLINE") ~ "Hook and line",
       c("TRAP")                      ~ "Trap",
-      c("UNKNOWN", "UNKNOWN TRAWL")  ~ "Unknown/trawl",
+      c("UNKNOWN TRAWL")             ~ "Unknown trawl"
     )
   ) |>
   select(year, area, species_common_name, gear, landed_kg, discarded_kg) |>
   dplyr::group_by(year, species_common_name, gear, area) |>
   dplyr::summarise(
-    landed_kg = sum(landed_kg, na.rm = TRUE),
-    discarded_kg = sum(discarded_kg, na.rm = TRUE),
+    landings = 1e-03 * sum(landed_kg, na.rm = TRUE),
+    discards = 1e-03 * sum(discarded_kg, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  dplyr::arrange(species_common_name, year, gear)
-
-# TODO Consider what years to use
+  tidyr::pivot_longer(
+    cols = all_of(c("landings", "discards")),
+    names_to = "type",
+    values_to = "catch_t"
+  ) |>
+  dplyr::mutate(source = "GFFOS") |>
+  dplyr::arrange(species_common_name, gear, type, year) |>
+  dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
 
 
 # Read historical data ---------------------------------------------------------
 
-d_old <- NULL # TODO Read old data
+# All gears landings 1935-1965
+d1 <- readRDS("data/raw/catch-commercial-landings-all-gears-1935-1965.rds") |>
+  dplyr::mutate(
+    year = Year,
+    species_common_name = "north pacific spiny dogfish",
+    gear = "All gears", # TODO Update
+    area = "4B",
+    type = "landings",
+    catch_t = `4B`,
+    source = "Gallucci"
+  ) |>
+  dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
+
+# Hook and line landings 1966-2008
+d2 <- readRDS("data/raw/catch-commercial-landings-longline-1966-2008.rds") |>
+  tibble::add_row(Year = 1966, `4B` = 270) |> # Missing first row
+  dplyr::mutate(
+    year = Year,
+    species_common_name = "north pacific spiny dogfish",
+    gear = "Longline", # TODO Update
+    area = "4B",
+    type = "landings",
+    catch_t = `4B`,
+    source = "Gallucci"
+  ) |>
+  dplyr::arrange(year) |>
+  dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
+
+# Trawl landings 1966-2008
+d3 <- readRDS("data/raw/catch-commercial-landings-trawl-1966-2008.rds") |>
+  dplyr::mutate(
+    year = Year,
+    species_common_name = "north pacific spiny dogfish",
+    gear = "Trawl", # TODO Update
+    area = "4B",
+    type = "landings",
+    catch_t = `4B`,
+    source = "Gallucci"
+  ) |>
+  dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
+
+# Hook and line discards 2001-2006
+d4 <- readRDS("data/raw/catch-commercial-discards-longline-2001-2006.rds") |>
+  dplyr::mutate(
+    year = Year,
+    species_common_name = "north pacific spiny dogfish",
+    gear = "Longline", # TODO Update
+    area = "4B",
+    type = "discards",
+    catch_t = `4B`,
+    source = "Gallucci"
+  ) |>
+  dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
+
+# Trawl discards 1966-2008
+d5 <- readRDS("data/raw/catch-commercial-discards-trawl-1966-2008.rds") |>
+  dplyr::mutate(
+    year = Year,
+    species_common_name = "north pacific spiny dogfish",
+    gear = "Trawl", # TODO Update
+    area = "4B",
+    type = "discards",
+    catch_t = `4B`,
+    source = "Gallucci"
+  ) |>
+  dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
 
 # Bind data --------------------------------------------------------------------
 
-d <- bind_rows(d, d_old)
-
+d <- dplyr::bind_rows(d0, d1, d2, d3, d4, d5) |>
+  dplyr::mutate(catch_t = round(catch_t, 3)) |>
+  tidyr::drop_na() |>
+  dplyr::arrange(species_common_name, gear, type, year)
+  
 # Write data -------------------------------------------------------------------
 
 saveRDS(d, file = "data/generated/catch-commercial.rds")
 
 # Plot data --------------------------------------------------------------------
 
-dd <- d |>
-  dplyr::mutate(facet = gear, .before = 3) |>
-  tidyr::pivot_longer(
-    cols = c("landed_kg", "discarded_kg"),
-    names_to = "desc",
-    values_to = "value"
-  ) |>
-  dplyr::mutate(gear = ifelse(desc == "discarded_kg", "Discarded", gear))
-
-# Plot
-# TODO Consider adapting plot_catch()
-gfplot::plot_catch(dd, xlim = c(1954, 2023)) +
-  ggplot2::facet_wrap(~facet, ncol = 1)
+ggplot(d, aes(x = year, y = catch_t, fill = type)) +
+  geom_bar(position = "stack", stat = "identity") +
+  facet_wrap(~gear, ncol = 1)
