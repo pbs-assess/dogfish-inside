@@ -3,15 +3,10 @@ library(dplyr)
 library(gfplot)
 library(ggplot2)
 library(tibble)
-# Source
-source("R/utils.R")
 # Theme set
 ggplot2::theme_set(gfplot::theme_pbs())
 
 # Read data --------------------------------------------------------------------
-
-# TODO Retain month?
-# TODO Check area
 
 d <- readRDS("data/raw/catch-survey.rds") |> 
   dplyr::mutate(
@@ -22,8 +17,21 @@ d <- readRDS("data/raw/catch-survey.rds") |>
   ) |>
   tidyr::drop_na(survey) |>
   dplyr::group_by(year, species_common_name, survey) |>
-  dplyr::summarise(total_pc = sum(catch_count), .groups = "drop") |>
-  dplyr::mutate(area = "4B", .before = 4)
+  dplyr::summarise(catch_pc = sum(catch_count), .groups = "drop") |>
+  dplyr::mutate(catch_kpc = 1e-03 * catch_pc) |>
+  dplyr::mutate(area = "4B") |>
+  dplyr::mutate(type = "landings") |>
+  dplyr::mutate(source = "GFBio") |>
+  dplyr::select(
+    year, 
+    species_common_name, 
+    area, 
+    survey, 
+    type, 
+    catch_kpc, 
+    source
+  ) |>
+  dplyr::arrange(year, survey)
 
 # Write data -------------------------------------------------------------------
 
