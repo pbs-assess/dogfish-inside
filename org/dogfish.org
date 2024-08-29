@@ -2,16 +2,22 @@
 #+archive: ::* Archive
 
 * Tasks
-** todo Update input data [0/5]
-   - [ ] Include historical catch
+** todo Update input data [1/6]
+   - [X] Include historical catch data
    - [ ] Exclude low reliability years
    - [ ] Include other sources of catch
    - [ ] Choose total/landed/discarded
+   - [ ] Use get_survey_samples2() for many more dogfish lengths
    - [ ] Update geostatistical index
 ** todo Wrangle input data [/]
 ** todo Update input files [/] 
 ** todo Generate data figures [/]
-* Ideas
+* Temp
+** Data into dogfish-inside/ [/]
+** Base model fit dogfish-inside [/]  
+* Questions
+** Include commercial landings 1876--1936?
+** Reasonable to include unknown trawl in bottom trawl?
 * Archive
 
 ** todo Check archiving locally [5/5]
