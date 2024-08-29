@@ -1,12 +1,12 @@
 # Define path ------------------------------------------------------------------
 
 # Path on Salmon$ (S:\) network drive
-p <- "S:/FMCR_Fishery_Monitoring_Catch_Reporting/Recreational_CM/Catch_Data/"
+p <- "S:/FMCR_Fishery_Monitoring_Catch_Reporting/Recreational_CM/Catch_Data"
 f <- "SC Sport Catch (Master Do Not Edit).xlsx"
 path <- file.path(p, f)
 # Sheet
-s <- readxl::excel_sheets()
-sheet <- s[]
+s <- readxl::excel_sheets(path = path)
+sheet <- s[1] # "YTD"
 
 # Read Creel data --------------------------------------------------------------
 
