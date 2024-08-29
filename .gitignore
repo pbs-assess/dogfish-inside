@@ -28,6 +28,7 @@ temp.R
 # Data
 *.Rdata
 *.rda
+*.csv
 *.xls
 *.xlsx
 
