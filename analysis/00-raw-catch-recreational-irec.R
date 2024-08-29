@@ -7,8 +7,8 @@ path <- list.files(
   full.names = TRUE
 )
 # Sheet
-s <- readxl::excel_sheets()
-sheet <- s[]
+s <- readxl::excel_sheets(path = path)
+sheet <- s[2] # "calibrated iREC estimates" 
 
 # Read iREC data ---------------------------------------------------------------
 
