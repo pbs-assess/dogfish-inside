@@ -2,25 +2,20 @@
 #+archive: ::* Archive
 
 * Tasks
-** todo Update input data [1/6]
-   - [X] Include historical catch data
-   - [ ] Exclude low reliability years
-   - [ ] Include other sources of catch
-   - [ ] Choose total/landed/discarded
-   - [ ] Use get_survey_samples2() for many more dogfish lengths
-   - [ ] Update geostatistical index
-** todo Wrangle input data [/]
-** todo Update input files [/] 
-** todo Generate data figures [/]
-* Temp
-** Data into dogfish-inside/ [/]
-** Base model fit dogfish-inside [/]  
+** Update input files [0/3]
+   - [ ] Write functions for complicated inputs
+   - [ ] Compare model choices to US assessment
+   - [ ] Update input files
+** Generate data figures [/]
+** Fit base model [/]  
+
 * Questions
 ** Include commercial landings 1876--1936?
 ** Reasonable to include unknown trawl in bottom trawl?
 * Archive
 
-** todo Check archiving locally [5/5]
+** done Check archiving locally [5/5]
+   CLOSED: [2024-08-21 Wed 12:26]
    :PROPERTIES:
    :ARCHIVE_TIME: 2024-08-21 Wed 12:26
    :ARCHIVE_FILE: ~/github/dogfish-inside/org/index.org
@@ -33,3 +28,16 @@
    - [X] Start tree structure with todo subtrees
    - [X] Mark tasks done
    - [X] Use C-c C-x C-s (org-archive-subtree)
+
+** done Update catch data [3/3]
+   CLOSED: [2024-08-30 Fri 16:02]
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2024-08-30 Fri 16:02
+   :ARCHIVE_FILE: ~/github/dogfish-inside/org/dogfish.org
+   :ARCHIVE_OLPATH: Tasks
+   :ARCHIVE_CATEGORY: dogfish
+   :ARCHIVE_TODO: done
+   :END:
+   - [X] Update recreational data
+   - [X] Update fleet definitions
+   - [X] Update ss3 catch data
