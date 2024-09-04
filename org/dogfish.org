@@ -2,13 +2,20 @@
 #+archive: ::* Archive
 
 * Tasks
-** Update input files [0/3]
-   - [ ] Write functions for complicated inputs
+** Continue simplify input generation [0/3]                        :workflow:
+   - [ ] Draft write_control()
+   - [ ] Draft write_data()
+   - [ ] Write functions for complicated inputs   
+** Update input files [0/4]                                          :assess:
+   - [ ] Update starter
+   - [ ] Update data
+   - [ ] Update control
+   - [ ] Update forecast
+** Compare model choices [0/2]                                       :assess:
    - [ ] Compare model choices to US assessment
-   - [ ] Update input files
+   - [ ] Compare model choices to Canadian assessments
 ** Generate data figures [/]
 ** Fit base model [/]  
-
 * Questions
 ** Include commercial landings 1876--1936?
 ** Reasonable to include unknown trawl in bottom trawl?
@@ -41,3 +48,16 @@
    - [X] Update recreational data
    - [X] Update fleet definitions
    - [X] Update ss3 catch data
+
+** done Simplify input generation [3/3]                            :workflow:
+   CLOSED: [2024-09-03 Tue 18:05]
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2024-09-03 Tue 18:05
+   :ARCHIVE_FILE: ~/github/dogfish-inside/org/dogfish.org
+   :ARCHIVE_OLPATH: Tasks
+   :ARCHIVE_CATEGORY: dogfish
+   :ARCHIVE_TODO: done
+   :END:
+   - [X] Setup R package ssio
+   - [X] Draft write_starter()
+   - [X] Draft write_forecast()
