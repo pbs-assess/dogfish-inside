@@ -4,20 +4,20 @@
 #
 1954 #_styr
 2023 #_endyr
-1 #_nseas
+1  #_nseas
 12 #_months_per_seas
-2 #_Nsubseasons
-1 #_spawn_month
-2 #_Nsexes
+2  #_Nsubseasons
+1  #_spawn_month
+2  #_Nsexes
 70 #_Nages
-1 #_N_areas
-4 #_Nfleets
+1  #_N_areas
+4  #_Nfleets
 #_fleetinfo
 #_type	fleet_timing	area	fleet_units	need_catch_mult	fleet_name
-1	-1	1	1	1	Bottom_trawl  	#_1
-1	-1	1	1	1	Midwater_trawl	#_2
-1	-1	1	1	1	Hook_and_line 	#_3
-1	-1	1	2	1	HBLL          	#_4
+1	      -1	          1	    1	          1	              Bottom_trawl  	#_1
+1	      -1	          1	    1	          1	              Midwater_trawl	#_2
+1	      -1	          1	    1	          1	              Hook_and_line 	#_3
+1	      -1	          1	    2	          1	              HBLL          	#_4
 #_Catch data
 #_year	season	fleet	catch	catch_se
  1954	1	1	 773.91	0.01	#_1         
