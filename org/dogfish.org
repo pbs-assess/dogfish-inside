@@ -2,10 +2,10 @@
 #+archive: ::* Archive
 
 * Tasks
-** Continue simplify input generation [0/3]                        :workflow:
-   - [ ] Draft write_control()
-   - [ ] Draft write_data()
-   - [ ] Write functions for complicated inputs   
+** Continue ssio development [0/3]
+   - [ ] Write functions for complicated inputs
+   - [ ] Test write_data()
+   - [ ] Test write_control()
 ** Update input files [0/4]                                          :assess:
    - [ ] Update starter
    - [ ] Update data
@@ -61,3 +61,15 @@
    - [X] Setup R package ssio
    - [X] Draft write_starter()
    - [X] Draft write_forecast()
+
+** done Continue simplify input generation [2/2]                   :workflow:
+   CLOSED: [2024-09-05 Thu 18:31]
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2024-09-05 Thu 18:32
+   :ARCHIVE_FILE: ~/github/dogfish-inside/org/dogfish.org
+   :ARCHIVE_OLPATH: Tasks
+   :ARCHIVE_CATEGORY: dogfish
+   :ARCHIVE_TODO: done
+   :END:
+   - [X] Draft write_data()
+   - [X] Draft write_control()
