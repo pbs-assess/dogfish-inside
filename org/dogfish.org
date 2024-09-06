@@ -2,10 +2,14 @@
 #+archive: ::* Archive
 
 * Tasks
-** Continue ssio development [0/3]
+** Continue ssio development [0/4]
    - [ ] Write functions for complicated inputs
+   - [ ] Turn of features by default
    - [ ] Test write_data()
    - [ ] Test write_control()
+** Update data [0/2]
+   - [ ] Update catch_se to log(catch) se
+   - [ ] Update length.rds
 ** Update input files [0/4]                                          :assess:
    - [ ] Update starter
    - [ ] Update data
