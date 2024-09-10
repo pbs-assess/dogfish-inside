@@ -2,11 +2,10 @@
 #+archive: ::* Archive
 
 * Tasks
-** Continue ssio development [0/4]
+** Continue ssio development [1/4]
+   - [X] Test write_control()
    - [ ] Write functions for complicated inputs
-   - [ ] Turn of features by default
-   - [ ] Test write_data()
-   - [ ] Test write_control()
+   - [ ] Turn off features by default
 ** Update data [0/2]
    - [ ] Update catch_se to log(catch) se
    - [ ] Update length.rds
