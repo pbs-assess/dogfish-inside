@@ -13,8 +13,12 @@ path <- file.path("ss3", "T01")
 
 # Data frames ------------------------------------------------------------------
 
-# Fleets
-catch_info <- readRDS("data/ss3/fleet-info.rds") #
+# Catch
+catch_info <- create_catch_info() |>
+  append_catch_info(1, -1, 1, 1, 1, name = "Bottom trawl") |>
+  append_catch_info(1, -1, 1, 1, 1, name = "Midwater trawl") |>
+  append_catch_info(1, -1, 1, 1, 1, name = "Hook and line") |>
+  append_catch_info(1, -1, 1, 2, 1, name = "HBLL")
 catch_data <- readRDS("data/ss3/catch.rds") |>
   dplyr::filter(fleet %in% c(1, 3, 4, 7)) |>
   dplyr::mutate(
@@ -28,13 +32,21 @@ catch_data <- readRDS("data/ss3/catch.rds") |>
   ) |>
   tidyr::drop_na()
 # Index
-index_info <- readRDS("data/ss3/cpue-info.rds") #
+index_info <- create_index_info() |>
+  append_index_info(1, 1, name = "Bottom trawl") |>
+  append_index_info(2, 1, name = "Midwater trawl") |>
+  append_index_info(3, 1, name = "Hook and line") |>
+  append_index_info(4, 0, name = "HBLL")
 index_data <- readRDS("data/ss3/index.rds")
 # # Discards
 # discard_info <- NULL
 # discard_data <- NULL
 # Length
-length_info <- readRDS("data/ss3/length-info.rds")
+length_info <- create_length_info() |>
+  append_length_info(-1, 1e-04, 0, 0, 0, 0, 0.001, name = "Bottom trawl") |>
+  append_length_info(-1, 1e-04, 0, 0, 0, 0, 0.001, name = "Midwater trawl") |>
+  append_length_info(-1, 1e-04, 0, 0, 0, 0, 0.001, name = "Hook and line") |>
+  append_length_info(-1, 1e-04, 0, 0, 0, 0, 0.001, name = "HBLL")
 length_data <- readRDS("data/ss3/length.rds")
 
 # Write ------------------------------------------------------------------------
@@ -50,7 +62,7 @@ ssio::write_data(
   n_sexes = 2,
   n_ages = 70,
   n_areas = 1,
-  n_fleets = nrow(fleet_info),
+  n_fleets = nrow(catch_info),
   catch_info = catch_info,
   catch_data = catch_data,
   index_info = index_info,

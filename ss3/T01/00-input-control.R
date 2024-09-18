@@ -14,13 +14,8 @@ path <- file.path("ss3", "T01")
 # Data frames ------------------------------------------------------------------
 
 # Recruitment
-recruitment_info <- tibble::tibble(
-  growth_pattern = 1,
-  month = 1,
-  area = 1,
-  age_at_settlement = 0
-) |>
-  as.data.frame()
+recruitment_info <- create_recruitment_info() |>
+  append_recruitment_info(1, 1, 1, 0, name = "Growth pattern 1")
 # Maturity
 maturity_data <- readRDS("data/ss3/maturity.rds")
 # Mortality and growth
@@ -36,44 +31,36 @@ spawner_recruitment_parameters <- readRDS("data/ss3/parameters.rds") |>
   dplyr::select(-parameters) |>
   as.data.frame()
 # Catchability
-catchability_info <- catchability_option <- tibble::tribble(
-  ~fleet, ~link, ~link_info, ~extra_se, ~biasadj, ~float,
-       4,     1,          0,         0,        0,      1 # HBLL
-) |>
-  as.data.frame()
+catchability_info <- create_catchability_info() |>
+  append_catchability_info(4, 1, 0, 0, 0, 1, name = "HBLL")
 catchability_parameters <- readRDS("data/ss3/parameters.rds") |>
   dplyr::filter(parameters == "Q") |>
   dplyr::select(-parameters) |>
   as.data.frame()
 # Selectivity
 n_fleets <- 4
-selectivity_size_info <- tibble::tibble(
-  pattern = rep(24, n_fleets),
-  discard = 0,
-  male = 0,
-  special = 0
-) |>
-  as.data.frame()
-selectivity_age_info <-  tibble::tibble(
-  pattern = rep(0, n_fleets),
-  discard = 0,
-  male = 0,
-  special = 0
-) |>
-  as.data.frame()
+selectivity_size_info <- create_selectivity_info() |>
+  append_selectivity_info(24, 0, 0, 0, name = "Bottom trawl") |>
+  append_selectivity_info(24, 0, 0, 0, name = "Midwater trawl") |>
+  append_selectivity_info(24, 0, 0, 0, name = "Hook and line") |>
+  append_selectivity_info(24, 0, 0, 0, name = "HBLL")
+selectivity_age_info <- create_selectivity_info() |>
+  append_selectivity_info(0, 0, 0, 0, name = "Bottom trawl") |>
+  append_selectivity_info(0, 0, 0, 0, name = "Midwater trawl") |>
+  append_selectivity_info(0, 0, 0, 0, name = "Hook and line") |>
+  append_selectivity_info(0, 0, 0, 0, name = "HBLL")
 selectivity_parameters <- readRDS("data/ss3/parameters.rds") |>
   dplyr::filter(parameters == "SS") |>
   dplyr::select(-parameters) |>
   as.data.frame()
 # Variance adjustment
-variance_info <- tibble::tibble(
-  data_type = 4,
-  fleet = seq_len(n_fleets),
-  value = 1
-) |>
-  as.data.frame()
+variance_info <- create_variance_info() |>
+  append_variance_info(4, 1, 1, name = "Bottom trawl") |>
+  append_variance_info(4, 2, 1, name = "Midwater trawl") |>
+  append_variance_info(4, 3, 1, name = "Hook and line") |>
+  append_variance_info(4, 4, 1, name = "HBLL")
 # Lambda
-lambda_info <- tibble::tibble() |> as.data.frame()
+lambda_info <- create_lambda_info()
 
 # Write ------------------------------------------------------------------------
 
