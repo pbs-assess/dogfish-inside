@@ -54,18 +54,20 @@
 0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_3
 0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_4
 0 1 0.5 0 0 0 -50 0 0 0 0 0 0 0 # FracFemale_GP_1
-0 0 0 0 0 0 0 0 0 0 # seasonal parameters
+# seasonality info
+# wt_len_fem_1 wt_len_fem_2 maturity_1 maturity_2 fecundity_1 fecundity_2 wt_len_mal_1 wt_len_mal_2 l1 von_bert_k name
+0 0 0 0 0 0 0 0 0 0 # seasonality
 7 # spawner recruitment option
 1 # use steepness
 0 # spawner recruitment feature
 # spawner recruitment parameters
-# LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
-5 15 9.34396 0 0 0 1 0 0 0 0 0 0 0
-0 1 0.4 0.5 0.287717 2 1 0 0 0 0 0 0 0
-0.2 5 1 0 0 0 -50 0 0 0 0 0 0 0
-0.2 1 0.4 0 0 0 -50 0 0 0 0 0 0 0
--1 1 0 0 0 0 -50 0 0 0 0 0 0 0
--1 1 0 0 0 0 -50 0 0 0 0 0 0 0
+# lower upper initial prior_mean prior_sd prior_type phase env_link dev_link dev_year_min dev_year_max dev_phase block block_fn name
+5 15 10 0 0 0 1 0 0 0 0 0 0 0 # SR_LN(R0)
+0 1 0.4 0.5 0.28 2 1 0 0 0 0 0 0 0 # SR_surv_Sfrac
+0.2 5 1 0 0 0 -50 0 0 0 0 0 0 0 # SR_surv_Beta
+0.2 1 0.4 0 0 0 -50 0 0 0 0 0 0 0 # SR_sigmaR
+-1 1 0 0 0 0 -50 0 0 0 0 0 0 0 # SR_regime
+-1 1 0 0 0 0 -50 0 0 0 0 0 0 0 # SR_autocorr
 1 # recruitment deviation option
 1954 # recruitment deviation year start
 2015 # recruitment deviation year end
@@ -81,8 +83,8 @@
 4 1 0 0 0 1 # HBLL
 -9999 0 0 0 0 0 # terminal line
 # catchability parameters
-# LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
--5 5 -2.65 0 0 0 -50 0 0 0 0 0 0 0
+# lower upper initial prior_mean prior_sd prior_type phase env_link dev_link dev_year_min dev_year_max dev_phase block block_fn name
+-5 5 -2.65 0 0 0 -50 0 0 0 0 0 0 0 # LnQ_base_HBLL
 # selectivity size info
 # pattern discard male special name
 24 0 0 0 # Bottom trawl
@@ -96,31 +98,31 @@
 0 0 0 0 # Hook and line
 0 0 0 0 # HBLL
 # selectivity parameters
-# LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
-35 150 106.6 100 30 6 3 0 0 0 0 0 0 0
--10 50 -10 0 0 0 -50 0 0 0 0 0 0 0
--10 10 5.4 5.05 0.3 6 3 0 0 0 0 0 0 0
--10 50 15 0 0 0 -50 0 0 0 0 0 0 0
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0
--999 999 -999 0 0 0 -50 0 0 0 0 0 0 0
-35 110 52.6 55 16.5 6 3 0 0 0 0 0 0 0
--10 50 -10 0 0 0 -50 0 0 0 0 0 0 0
--10 10 5.4 4.6 0.3 6 3 0 0 0 0 0 0 0
--10 10 5.2 4 0.3 6 3 0 0 0 0 0 0 0
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0
-35 110 101.4 95 28.5 6 3 0 0 0 0 0 0 0
--10 50 -10 0 0 0 -50 0 0 0 0 0 0 0
--10 10 4.7 4 0.3 6 3 0 0 0 0 0 0 0
--10 50 15 0 0 0 -50 0 0 0 0 0 0 0
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0
--999 999 -999 0 0 0 -50 0 0 0 0 0 0 0
-35 200 150 95 28.5 6 3 0 0 0 0 0 0 0
--10 50 -10 0 0 0 -50 0 0 0 0 0 0 0
--10 10 6.2 5.7 0.3 6 3 0 0 0 0 0 0 0
--10 50 15 0 0 0 -50 0 0 0 0 0 0 0
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0
--999 999 -999 0 0 0 -50 0 0 0 0 0 0 0
+# lower upper initial prior_mean prior_sd prior_type phase env_link dev_link dev_year_min dev_year_max dev_phase block block_fn name
+35 150 106 100 30 6 3 0 0 0 0 0 0 0 # size_p_1_Bottom_trawl
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_Bottom_trawl
+-10 10 5.4 5 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_Bottom_trawl
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_Bottom_trawl
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_Bottom_trawl
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_Bottom_trawl
+35 110 53 55 17 6 3 0 0 0 0 0 0 0 # size_p_1_Midwater_trawl
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_Midwater_trawl
+-10 10 5.4 4.6 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_Midwater_trawl
+-10 10 5.2 4 0.3 6 3 0 0 0 0 0 0 0 # size_p_4_Midwater_trawl
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_Midwater_trawl
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_Midwater_trawl
+35 110 101 95 28 6 3 0 0 0 0 0 0 0 # size_p_1_Hook_and_line
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_Hook_and_line
+-10 10 4.7 4 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_Hook_and_line
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_Hook_and_line
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_Hook_and_line
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_Hook_and_line
+35 200 150 95 28 6 3 0 0 0 0 0 0 0 # size_p_1_HBLL
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_HBLL
+-10 10 6.2 5.7 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_HBLL
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_HBLL
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_HBLL
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_HBLL
 0 # use selectivity 2d
 0 # use tag recapture
 # variance info

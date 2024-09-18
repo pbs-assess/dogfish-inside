@@ -55,44 +55,76 @@ mortality_growth_parameters <- create_p() |>
 seasonality_info <- create_seasonality_info() |>
   append_seasonality_info(name = "seasonality")
 
-seasonality_info <- rep(0L, 10) |> t() |> as.matrix() |> as.data.frame()
-
 # Spawner recruitment ----------------------------------------------------------
 
-spawner_recruitment_parameters <- readRDS("data/ss3/parameters.rds") |>
-  dplyr::filter(parameters == "SR") |>
-  dplyr::select(-parameters) |>
-  as.data.frame()
-# Catchability
+spawner_recruitment_parameters <- create_p() |>
+  append_p(5.00, 15, 10., 0.0, 0.00, 0,   1, name = "SR_LN(R0)") |>
+  append_p(0.00, 1., 0.4, 0.5, 0.28, 2,   1, name = "SR_surv_Sfrac") |>
+  append_p(0.20, 5., 1.0, 0.0, 0.00, 0, -50, name = "SR_surv_Beta") |>
+  append_p(0.20, 1., 0.4, 0.0, 0.00, 0, -50, name = "SR_sigmaR") |>
+  append_p(-1.0, 1., 0.0, 0.0, 0.00, 0, -50, name = "SR_regime") |>
+  append_p(-1.0, 1., 0.0, 0.0, 0.00, 0, -50, name = "SR_autocorr")
+
+# Catchability -----------------------------------------------------------------
+
 catchability_info <- create_catchability_info() |>
   append_catchability_info(4, 1, 0, 0, 0, 1, name = "HBLL")
-catchability_parameters <- readRDS("data/ss3/parameters.rds") |>
-  dplyr::filter(parameters == "Q") |>
-  dplyr::select(-parameters) |>
-  as.data.frame()
-# Selectivity
+
+catchability_parameters <- create_p() |>
+  append_p(-5, 5, -2.65, 0, 0, 0, -50, name = "LnQ_base_HBLL")
+
+# Selectivity ------------------------------------------------------------------
+
 n_fleets <- 4
+
 selectivity_size_info <- create_selectivity_info() |>
   append_selectivity_info(24, 0, 0, 0, name = "Bottom trawl") |>
   append_selectivity_info(24, 0, 0, 0, name = "Midwater trawl") |>
   append_selectivity_info(24, 0, 0, 0, name = "Hook and line") |>
   append_selectivity_info(24, 0, 0, 0, name = "HBLL")
+
 selectivity_age_info <- create_selectivity_info() |>
   append_selectivity_info(0, 0, 0, 0, name = "Bottom trawl") |>
   append_selectivity_info(0, 0, 0, 0, name = "Midwater trawl") |>
   append_selectivity_info(0, 0, 0, 0, name = "Hook and line") |>
   append_selectivity_info(0, 0, 0, 0, name = "HBLL")
-selectivity_parameters <- readRDS("data/ss3/parameters.rds") |>
-  dplyr::filter(parameters == "SS") |>
-  dplyr::select(-parameters) |>
-  as.data.frame()
-# Variance adjustment
+
+selectivity_parameters <- create_p() |>
+  append_p( 35, 150, 106, 100,  30, 6,   3, name = "size_p_1_Bottom_trawl") |>
+  append_p(-10,  50, -10,   0,   0, 0, -50, name = "size_p_2_Bottom_trawl") |>
+  append_p(-10,  10, 5.4,   5, 0.3, 6,   3, name = "size_p_3_Bottom_trawl") |>
+  append_p(-10,  50,  15,   0,   0, 0, -50, name = "size_p_4_Bottom_trawl") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_Bottom_trawl") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_Bottom_trawl") |>
+  append_p( 35, 110,  53,  55,  17, 6,   3, name = "size_p_1_Midwater_trawl") |>
+  append_p(-10,  50, -10,   0,   0, 0, -50, name = "size_p_2_Midwater_trawl") |>
+  append_p(-10,  10, 5.4, 4.6, 0.3, 6,   3, name = "size_p_3_Midwater_trawl") |>
+  append_p(-10,  10, 5.2,   4, 0.3, 6,   3, name = "size_p_4_Midwater_trawl") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_Midwater_trawl") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_6_Midwater_trawl") |>
+  append_p( 35, 110,  101, 95,  28, 6,   3, name = "size_p_1_Hook_and_line") |>
+  append_p(-10,  50,  -10,  0,   0, 0, -50, name = "size_p_2_Hook_and_line") |>
+  append_p(-10,  10,  4.7,  4, 0.3, 6,   3, name = "size_p_3_Hook_and_line") |>
+  append_p(-10,  50,   15,  0,   0, 0, -50, name = "size_p_4_Hook_and_line") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_Hook_and_line") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_Hook_and_line") |>
+  append_p( 35, 200,  150, 95,  28, 6,   3, name = "size_p_1_HBLL") |>
+  append_p(-10,  50,  -10,  0,   0, 0, -50, name = "size_p_2_HBLL") |>
+  append_p(-10,  10, 6.2, 5.7, 0.3, 6,   3, name = "size_p_3_HBLL") |>
+  append_p(-10,  50,  15,   0,   0, 0, -50, name = "size_p_4_HBLL") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_HBLL") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_HBLL")
+
+# Variance adjustment ----------------------------------------------------------
+
 variance_info <- create_variance_info() |>
   append_variance_info(4, 1, 1, name = "Bottom trawl") |>
   append_variance_info(4, 2, 1, name = "Midwater trawl") |>
   append_variance_info(4, 3, 1, name = "Hook and line") |>
   append_variance_info(4, 4, 1, name = "HBLL")
-# Lambda
+
+# Lambda -----------------------------------------------------------------------
+
 lambda_info <- create_lambda_info()
 
 # Write ------------------------------------------------------------------------
