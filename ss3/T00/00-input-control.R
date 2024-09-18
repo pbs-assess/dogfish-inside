@@ -11,21 +11,54 @@ path <- file.path("ss3", "T01")
 
 ?ssio::write_control()
 
-# Data frames ------------------------------------------------------------------
+# Recruitment ------------------------------------------------------------------
 
-# Recruitment
 recruitment_info <- create_recruitment_info() |>
   append_recruitment_info(1, 1, 1, 0, name = "Growth pattern 1")
-# Maturity
+
+# Maturity ---------------------------------------------------------------------
+
 maturity_data <- readRDS("data/ss3/maturity.rds")
-# Mortality and growth
-mortality_growth_parameters <- readRDS("data/ss3/parameters.rds") |>
-  dplyr::filter(parameters == "MG") |>
-  dplyr::select(-parameters) |>
-  as.data.frame()
-# Seasonal
-seasonal_parameters <- rep(0L, 10) |> t() |> as.matrix() |> as.data.frame()
-# Spawner recruitment
+
+# Mortality and growth ---------------------------------------------------------
+
+mortality_growth_parameters <- create_p() |>
+  append_p(0.010, 0.11, 0.0740, 0, 0, 0, -50, name = "NatM_p_1_Fem_GP_1") |>
+  append_p(1.000, 55.0, 28.000, 0, 0, 0, -50, name = "L_at_Amin_Fem_GP_1") |>
+  append_p(30.00, 100., 91.000, 0, 0, 0, -50, name = "L_at_Amax_Fem_GP_1") |>
+  append_p(0.010, 0.20, 0.0580, 0, 0, 0, -50, name = "VonBert_K_Fem_GP_1") |>
+  append_p(0.010, 0.30, 0.2500, 0, 0, 0, -50, name = "CV_young_Fem_GP_1") |>
+  append_p(0.010, 0.30, 0.0750, 0, 0, 0, -50, name = "CV_old_Fem_GP_1") |>
+  append_p(0.000, 0.10, 1.9e-6, 0, 0, 0, -50, name = "Wtlen_1_Fem_GP_1") |>
+  append_p(2.000, 4.00, 3.2000, 0, 0, 0, -50, name = "Wtlen_2_Fem_GP_1") |>
+  append_p(0.000, 100., 98.000, 0, 0, 0, -50, name = "Mat50%_Fem_GP_1 ") |>
+  append_p(-1.00, 0.00, -0.170, 0, 0, 0, -50, name = "Mat_slope_Fem_GP_1") |>
+  append_p(-14.7, 3.00, -10.00, 0, 0, 0, -50, name = "Eggs_alpha_Fem_GP_1") |>
+  append_p(-3.00, 3.00, 0.1800, 0, 0, 0, -50, name = "Eggs_beta_Fem_GP_1") |>
+  append_p(0.000, 0.00, 0.0000, 0, 0, 0, -50, name = "NatM_p_1_Mal_GP_1") |>
+  append_p(-2.00, 2.00, 0.0390, 0, 0, 0, -50, name = "L_at_Amin_Mal_GP_1") |>
+  append_p(-1.00, 1.00, -0.093, 0, 0, 0, -50, name = "L_at_Amax_Mal_GP_1") |>
+  append_p(-2.00, 2.00, 0.4300, 0, 0, 0, -50, name = "VonBert_K_Mal_GP_1") |>
+  append_p(-1.00, 1.00, 0.0000, 0, 0, 0, -50, name = "CV_young_Mal_GP_1") |>
+  append_p(-1.00, 1.00, 0.2900, 0, 0, 0, -50, name = "CV_old_Mal_GP_1") |> 
+  append_p(0.000, 0.10, 3.5e-6, 0, 0, 0, -50, name = "Wtlen_1_Mal_GP_1") |>
+  append_p(2.000, 4.00, 3.0000, 0, 0, 0, -50, name = "Wtlen_2_Mal_GP_1") |>
+  append_p(-5.00, 5.00, 1.0000, 0, 0, 0, -50, name = "CohortGrowDev") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_1") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_2") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_3") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_4") |>
+  append_p(0.000, 1.00, 0.5000, 0, 0, 0, -50, name = "FracFemale_GP_1")
+
+# Seasonal ---------------------------------------------------------------------
+
+seasonality_info <- create_seasonality_info() |>
+  append_seasonality_info(name = "seasonality")
+
+seasonality_info <- rep(0L, 10) |> t() |> as.matrix() |> as.data.frame()
+
+# Spawner recruitment ----------------------------------------------------------
+
 spawner_recruitment_parameters <- readRDS("data/ss3/parameters.rds") |>
   dplyr::filter(parameters == "SR") |>
   dplyr::select(-parameters) |>
@@ -79,7 +112,7 @@ ssio::write_control(
   fecundity_option = 4,
   parameter_offset_method = 2,
   mortality_growth_parameters = mortality_growth_parameters,
-  seasonal_parameters = seasonal_parameters,
+  seasonality_info = seasonality_info,
   spawner_recruitment_option = 7,
   spawner_recruitment_parameters = spawner_recruitment_parameters,
   use_steepness = 1,

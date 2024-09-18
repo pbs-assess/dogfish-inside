@@ -27,33 +27,33 @@
 0 # hermaphroditism option
 2 # parameter offset method
 # mortality growth parameters
-# LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
-0.01 0.114 0.074 0 0 0 -50 0 0 0 0 0 0 0
-1 55 28.4 0 0 0 -50 0 0 0 0 0 0 0
-30 100 90.87 0 0 0 -50 0 0 0 0 0 0 0
-0.01 0.2 0.058 0 0 0 -50 0 0 0 0 0 0 0
-0.01 0.3 0.25 0 0 0 -50 0 0 0 0 0 0 0
-0.01 0.3 0.075 0 0 0 -50 0 0 0 0 0 0 0
-0 0.1 1.89e-6 0 0 0 -50 0 0 0 0 0 0 0
-2 4 3.19 0 0 0 -50 0 0 0 0 0 0 0
-0 100 97.6 0 0 0 -50 0 0 0 0 0 0 0
--1 0 -0.168 0 0 0 -50 0 0 0 0 0 0 0
--14.7 3 -9.96 0 0 0 -50 0 0 0 0 0 0 0
--3 3 0.176 0 0 0 -50 0 0 0 0 0 0 0
-0 0 0 0 0 0 -50 0 0 0 0 0 0 0
--2 2 -0.039 0 0 0 -50 0 0 0 0 0 0 0
--1 1 -0.093 0 0 0 -50 0 0 0 0 0 0 0
--2 2 0.428 0 0 0 -50 0 0 0 0 0 0 0
--1 1 0 0 0 0 -50 0 0 0 0 0 0 0
--1 1 0.287 0 0 0 -50 0 0 0 0 0 0 0
-0 0.1 3.54e-6 0 0 0 -50 0 0 0 0 0 0 0
-2 4 3.03 0 0 0 -50 0 0 0 0 0 0 0
--5 5 1 0 0 0 -50 0 0 0 0 0 0 0
-0 2 1 0 0 0 -50 0 0 0 0 0 0 0
-0 2 3.333 0 0 0 -50 0 0 0 0 0 0 0
-0 2 1 0 0 0 -50 0 0 0 0 0 0 0
-0 2 1 0 0 0 -50 0 0 0 0 0 0 0
-0 1 0.5 0 0 0 -50 0 0 0 0 0 0 0
+# lower upper initial prior_mean prior_sd prior_type phase env_link dev_link dev_year_min dev_year_max dev_phase block block_fn name
+0.01 0.11 0.074 0 0 0 -50 0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
+1 55 28 0 0 0 -50 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
+30 100 91 0 0 0 -50 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
+0.01 0.2 0.058 0 0 0 -50 0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
+0.01 0.3 0.25 0 0 0 -50 0 0 0 0 0 0 0 # CV_young_Fem_GP_1
+0.01 0.3 0.075 0 0 0 -50 0 0 0 0 0 0 0 # CV_old_Fem_GP_1
+0 0.1 1.9e-6 0 0 0 -50 0 0 0 0 0 0 0 # Wtlen_1_Fem_GP_1
+2 4 3.2 0 0 0 -50 0 0 0 0 0 0 0 # Wtlen_2_Fem_GP_1
+0 100 98 0 0 0 -50 0 0 0 0 0 0 0 # Mat50%_Fem_GP_1 
+-1 0 -0.17 0 0 0 -50 0 0 0 0 0 0 0 # Mat_slope_Fem_GP_1
+-14.7 3 -10 0 0 0 -50 0 0 0 0 0 0 0 # Eggs_alpha_Fem_GP_1
+-3 3 0.18 0 0 0 -50 0 0 0 0 0 0 0 # Eggs_beta_Fem_GP_1
+0 0 0 0 0 0 -50 0 0 0 0 0 0 0 # NatM_p_1_Mal_GP_1
+-2 2 0.039 0 0 0 -50 0 0 0 0 0 0 0 # L_at_Amin_Mal_GP_1
+-1 1 -0.093 0 0 0 -50 0 0 0 0 0 0 0 # L_at_Amax_Mal_GP_1
+-2 2 0.43 0 0 0 -50 0 0 0 0 0 0 0 # VonBert_K_Mal_GP_1
+-1 1 0 0 0 0 -50 0 0 0 0 0 0 0 # CV_young_Mal_GP_1
+-1 1 0.29 0 0 0 -50 0 0 0 0 0 0 0 # CV_old_Mal_GP_1
+0 0.1 3.5e-6 0 0 0 -50 0 0 0 0 0 0 0 # Wtlen_1_Mal_GP_1
+2 4 3 0 0 0 -50 0 0 0 0 0 0 0 # Wtlen_2_Mal_GP_1
+-5 5 1 0 0 0 -50 0 0 0 0 0 0 0 # CohortGrowDev
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_1
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_2
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_3
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_4
+0 1 0.5 0 0 0 -50 0 0 0 0 0 0 0 # FracFemale_GP_1
 0 0 0 0 0 0 0 0 0 0 # seasonal parameters
 7 # spawner recruitment option
 1 # use steepness
