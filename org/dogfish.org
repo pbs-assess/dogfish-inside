@@ -2,11 +2,7 @@
 #+archive: ::* Archive
 
 * Tasks
-** Continue ssio development [1/4]
-   - [X] Test write_control()
-   - [ ] Write functions for complicated inputs
-   - [ ] Turn off features by default
-** Update data [0/2]
+** todo Update data [0/2]                                            :assess:
    - [ ] Update catch_se to log(catch) se
    - [ ] Update length.rds
 ** Update input files [0/4]                                          :assess:
@@ -76,3 +72,16 @@
    :END:
    - [X] Draft write_data()
    - [X] Draft write_control()
+
+** done Continue ssio development [3/3]                              :assess:
+   CLOSED: [2024-09-18 Wed 14:26]
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2024-09-18 Wed 14:26
+   :ARCHIVE_FILE: ~/github/dogfish-inside/org/dogfish.org
+   :ARCHIVE_OLPATH: Tasks
+   :ARCHIVE_CATEGORY: dogfish
+   :ARCHIVE_TODO: done
+   :END:
+   - [X] Test write_control()
+   - [X] Write functions for info input
+   - [X] Write functions for parameter input
