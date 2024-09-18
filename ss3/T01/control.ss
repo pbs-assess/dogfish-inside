@@ -7,8 +7,8 @@
 1 # n recruitment settle
 0 # recruitment unused
 # recruitment info
-# growth_pattern month area age_at_settlement
-1 1 1 0
+# growth_pattern month area age_at_settlement name
+1 1 1 0 # Growth pattern 1
 0 # n block patterns
 1 # time varying method
 0 0 0 0 0 # time varying auto generation
@@ -77,24 +77,24 @@
 4 # fishing maximum
 4 # fishing iterations
 # catchability info
-# fleet link link_info extra_se biasadj float
-4 1 0 0 0 1
+# fleet link_type link_info extra_se bias_adjust float name
+4 1 0 0 0 1 # HBLL
 -9999 0 0 0 0 0 # terminal line
 # catchability parameters
 # LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
 -5 5 -2.65 0 0 0 -50 0 0 0 0 0 0 0
 # selectivity size info
-# pattern discard male special
-24 0 0 0
-24 0 0 0
-24 0 0 0
-24 0 0 0
+# pattern discard male special name
+24 0 0 0 # Bottom trawl
+24 0 0 0 # Midwater trawl
+24 0 0 0 # Hook and line
+24 0 0 0 # HBLL
 # selectivity age info
-# pattern discard male special
-0 0 0 0
-0 0 0 0
-0 0 0 0
-0 0 0 0
+# pattern discard male special name
+0 0 0 0 # Bottom trawl
+0 0 0 0 # Midwater trawl
+0 0 0 0 # Hook and line
+0 0 0 0 # HBLL
 # selectivity parameters
 # LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
 35 150 106.6 100 30 6 3 0 0 0 0 0 0 0
@@ -123,17 +123,17 @@
 -999 999 -999 0 0 0 -50 0 0 0 0 0 0 0
 0 # use selectivity 2d
 0 # use tag recapture
-# variance adjustment info
-# data_type fleet value
-4 1 1
-4 2 1
-4 3 1
-4 4 1
+# variance info
+# factor fleet value name
+4 1 1 # Bottom trawl
+4 2 1 # Midwater trawl
+4 3 1 # Hook and line
+4 4 1 # HBLL
 -9999 0 0 # terminal line
 1 # lambda max phase
 0 # lambda sd offset
 # lambda info
-# 
+# component fleet phase value method name
 -9999 0 0 0 0 # terminal line
 0 # sd report option
 999

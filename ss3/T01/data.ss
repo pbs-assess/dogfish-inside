@@ -9,8 +9,8 @@
 70 # n ages
 1 # n areas
 4 # n fleets
-# fleet info
-# type fleet_timing area fleet_units need_catch_mult fleet_name
+# catch info
+# fleet_type timing area units use_catch_mult name
 1 -1 1 1 1 Bottom_trawl
 1 -1 1 1 1 Midwater_trawl
 1 -1 1 1 1 Hook_and_line
@@ -204,11 +204,11 @@
 2023 1 4 3.135 0.01
 -9999 0 0 0 0 # terminal line
 # index info
-# fleet units errtype sd_report
-1 1 0 0
-2 1 0 0
-3 1 0 0
-4 0 0 0
+# fleet units error_type sd_report name
+1 1 0 0 # Bottom trawl
+2 1 0 0 # Midwater trawl
+3 1 0 0 # Hook and line
+4 0 0 0 # HBLL
 # index data
 # year month fleet est se
 2003 1 4 1805.42 0.283
@@ -241,11 +241,11 @@
 115 # length bin lower max
 1 # use length composition
 # length info
-# min_tail_comp add_to_comp combine_sexes compress_bins composition_error parameter_selection min_sample_size
--1 1e-4 0 0 0 0 0.001
--1 1e-4 0 0 0 0 0.001
--1 1e-4 0 0 0 0 0.001
--1 1e-4 0 0 0 0 0.001
+# min_tail_compress add_to_prop combine_sexes compress_bins error parameter min_sample_size name
+-1 1e-4 0 0 0 0 0.001 # Bottom trawl
+-1 1e-4 0 0 0 0 0.001 # Midwater trawl
+-1 1e-4 0 0 0 0 0.001 # Hook and line
+-1 1e-4 0 0 0 0 0.001 # HBLL
 19 # n length bins
 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100 105 110 115 # length bins lower
 # length data
