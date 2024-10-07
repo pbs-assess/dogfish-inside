@@ -2,9 +2,10 @@
 #+archive: ::* Archive
 
 * Tasks
-** todo Update data [0/2]                                            :assess:
+** todo Update data [0/3]                                            :assess:
+   - [ ] Separate landings and discards fleets
    - [ ] Update catch_se to log(catch) se
-   - [ ] Update length.rds
+   - [ ] Update lengths
 ** Update input files [0/4]                                          :assess:
    - [ ] Update starter
    - [ ] Update data
@@ -17,6 +18,7 @@
 ** Fit base model [/]  
 * Questions
 ** Include commercial landings 1876--1936?
+** Recreational dogfish lengths in GFBio?
 ** Reasonable to include unknown trawl in bottom trawl?
 * Archive
 
