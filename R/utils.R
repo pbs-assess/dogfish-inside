@@ -1,10 +1,9 @@
 fleet <- function (x = NULL) {
   .d <- c(
-    "Bottom trawl landings",
-    "Bottom trawl discards",    
+    "All gears",
+    "Bottom trawl",
     "Midwater trawl",
-    "Hook and line landings",
-    "Hook and line discards",    
+    "Hook and line",
     "Recreational",
     "HBLL"
   )
