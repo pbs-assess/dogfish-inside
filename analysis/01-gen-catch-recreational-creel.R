@@ -13,20 +13,11 @@ d <- readRDS("data/raw/catch-recreational-creel.rds") |>
     gear = "Recreational",
     type = dplyr::case_match(disposition, "Kept" ~ "landings"),
     catch_pc = estimate,
-    variance = standard_error^2,
     source = "Creel"
   ) |>
   dplyr::group_by(year, species_common_name, area, gear, type, source) |>
-  dplyr::summarise(
-    catch_pc = sum(catch_pc, na.rm = TRUE),
-    variance = sum(variance, na.rm = TRUE), # Assumes catch independent
-    .groups = "drop"
-  ) |>
-  dplyr::mutate(
-    catch_kpc = 1e-03 * catch_pc,
-    variance = (variance + catch_pc^2) * (1e-03)^2 - (catch_pc^2) * (1e-03)^2,
-    se = sqrt(variance)
-  ) |>
+  dplyr::summarise(catch_pc = sum(catch_pc, na.rm = TRUE), .groups = "drop") |>
+  dplyr::mutate(catch_kpc = 1e-03 * catch_pc) |>
   dplyr::select(
     year,
     species_common_name,
@@ -34,7 +25,6 @@ d <- readRDS("data/raw/catch-recreational-creel.rds") |>
     gear,
     type,
     catch_kpc,
-    se,
     source
   ) |>
   tidyr::drop_na()

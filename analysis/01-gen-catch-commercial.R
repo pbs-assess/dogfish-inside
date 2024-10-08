@@ -45,8 +45,21 @@ d0 <- readRDS(here::here("data", "raw", "catch-commercial.rds")) |>
 
 # Read historical data ---------------------------------------------------------
 
+# All gears landings 1876-1939
+d1 <- readRDS("data/raw/catch-commercial-landings-all-gears-1876-1939.rds") |>
+  dplyr::mutate(
+    year = Year,
+    species_common_name = "north pacific spiny dogfish",
+    gear = "All gears", # TODO Update
+    area = "4B",
+    type = "landings",
+    catch_t = Min, # For consistency with 1935-1939 overlap
+    source = "Ketchen"
+  ) |>
+  dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
+
 # All gears landings 1935-1965
-d1 <- readRDS("data/raw/catch-commercial-landings-all-gears-1935-1965.rds") |>
+d2 <- readRDS("data/raw/catch-commercial-landings-all-gears-1935-1965.rds") |>
   dplyr::mutate(
     year = Year,
     species_common_name = "north pacific spiny dogfish",
@@ -59,7 +72,7 @@ d1 <- readRDS("data/raw/catch-commercial-landings-all-gears-1935-1965.rds") |>
   dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
 
 # Hook and line landings 1966-2008
-d2 <- readRDS("data/raw/catch-commercial-landings-longline-1966-2008.rds") |>
+d3 <- readRDS("data/raw/catch-commercial-landings-longline-1966-2008.rds") |>
   tibble::add_row(Year = 1966, `4B` = 270) |> # Missing first row
   dplyr::mutate(
     year = Year,
@@ -74,7 +87,7 @@ d2 <- readRDS("data/raw/catch-commercial-landings-longline-1966-2008.rds") |>
   dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
 
 # Trawl landings 1966-2008
-d3 <- readRDS("data/raw/catch-commercial-landings-trawl-1966-2008.rds") |>
+d4 <- readRDS("data/raw/catch-commercial-landings-trawl-1966-2008.rds") |>
   dplyr::mutate(
     year = Year,
     species_common_name = "north pacific spiny dogfish",
@@ -87,7 +100,7 @@ d3 <- readRDS("data/raw/catch-commercial-landings-trawl-1966-2008.rds") |>
   dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
 
 # Hook and line discards 2001-2006
-d4 <- readRDS("data/raw/catch-commercial-discards-longline-2001-2006.rds") |>
+d5 <- readRDS("data/raw/catch-commercial-discards-longline-2001-2006.rds") |>
   dplyr::mutate(
     year = Year,
     species_common_name = "north pacific spiny dogfish",
@@ -100,7 +113,7 @@ d4 <- readRDS("data/raw/catch-commercial-discards-longline-2001-2006.rds") |>
   dplyr::select(year, species_common_name, area, gear, type, catch_t, source)
 
 # Trawl discards 1966-2008
-d5 <- readRDS("data/raw/catch-commercial-discards-trawl-1966-2008.rds") |>
+d6 <- readRDS("data/raw/catch-commercial-discards-trawl-1966-2008.rds") |>
   dplyr::mutate(
     year = Year,
     species_common_name = "north pacific spiny dogfish",
@@ -114,7 +127,7 @@ d5 <- readRDS("data/raw/catch-commercial-discards-trawl-1966-2008.rds") |>
 
 # Bind data --------------------------------------------------------------------
 
-d <- dplyr::bind_rows(d0, d1, d2, d3, d4, d5) |>
+d <- dplyr::bind_rows(d0, d1, d2, d3, d4, d5, d6) |>
   dplyr::mutate(catch_t = round(catch_t, 3)) |>
   tidyr::drop_na() |>
   dplyr::arrange(species_common_name, gear, type, year)

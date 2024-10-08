@@ -22,7 +22,16 @@ d <- readRDS("data/raw/samples-commercial.rds") |>
     )
   ) |>
   tidyr::drop_na(gear) |>
-  dplyr::filter(sampling_desc %in% c("KEEPERS", "UNSORTED")) |>
+  dplyr::mutate(
+    sampling_desc = dplyr::case_match(
+      sampling_desc,
+      c("KEEPERS")  ~ "keepers",
+      c("DISCARDS") ~ "discards",
+      c("UNSORTED") ~ "unsorted"
+    )
+  ) |>
+  tidyr::drop_na(sampling_desc) |>
+  tidyr::drop_na(length) |>
   dplyr::select(
     year,
     gear,
@@ -41,7 +50,28 @@ d <- readRDS("data/raw/samples-commercial.rds") |>
 saveRDS(d, file = "data/generated/samples-commercial.rds")
 
 # Plot data --------------------------------------------------------------------
-  
+
+# Sampling description 
+ggplot(d, aes(x = factor(year), y = length, colour = sampling_desc)) +
+  geom_boxplot() +
+  facet_grid(rows = vars(gear))
+
+ggplot(d, aes(x = sampling_desc, y = length, colour = sampling_desc)) +
+  geom_boxplot() +
+  facet_grid(rows = vars(gear))
+
+# Gear
+ggplot(d, aes(x = gear, y = length, colour = sampling_desc)) +
+  geom_boxplot()
+
+# Sex
+ggplot(d, aes(x = factor(year), y = length, colour = factor(sex))) +
+  geom_boxplot() +
+  facet_grid(rows = vars(gear))
+
+ggplot(d, aes(x = gear, y = length, colour = factor(sex))) +
+  geom_boxplot()
+
 # Glance
 dbt <- d |> dplyr::filter(gear == "Bottom trawl")
 
