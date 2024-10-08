@@ -2,10 +2,10 @@
 #+archive: ::* Archive
 
 * Tasks
-** todo Update data [0/3]                                            :assess:
-   - [ ] Separate landings and discards fleets
-   - [ ] Update catch_se to log(catch) se
-   - [ ] Update lengths
+** todo Setup report/ folder using csasdown [0/3]                    :assess:
+   - [ ] Setup report structure
+   - [ ] Begin populating methods with preliminary decisions
+   - [ ] Begin assembling visuals workflow
 ** Update input files [0/4]                                          :assess:
    - [ ] Update starter
    - [ ] Update data
@@ -18,6 +18,7 @@
 ** Fit base model [/]  
 * Questions
 ** Include commercial landings 1876--1936?
+** Include max early commercial landings sensitivity?
 ** Recreational dogfish lengths in GFBio?
 ** Reasonable to include unknown trawl in bottom trawl?
 * Archive
@@ -87,3 +88,18 @@
    - [X] Test write_control()
    - [X] Write functions for info input
    - [X] Write functions for parameter input
+
+** done Update data [5/5]                                            :assess:
+   CLOSED: [2024-10-07 Mon 17:36]
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2024-10-07 Mon 17:36
+   :ARCHIVE_FILE: ~/github/dogfish-inside/org/dogfish.org
+   :ARCHIVE_OLPATH: Tasks
+   :ARCHIVE_CATEGORY: dogfish
+   :ARCHIVE_TODO: done
+   :END:
+   - [X] Compare landings and discards by fleet visually
+   - [X] Remove calculated catch_se
+   - [X] Update fleets
+   - [X] Update catch
+   - [X] Update lengths
