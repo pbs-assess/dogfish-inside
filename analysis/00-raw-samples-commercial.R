@@ -1,6 +1,5 @@
 # remotes::install_github('pbs-assess/gfdata')
 library(gfdata)
-source("R/utils.R")
 
 # Read data
 d <- gfdata::get_commercial_samples(

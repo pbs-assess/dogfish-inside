@@ -1,5 +1,4 @@
 # remotes::install_github("pbs-assess/gfdata")
-source("R/utils.R")
 
 # Read HBLL survey design index from GFBio for area 4B
 d <- gfdata::get_survey_index(

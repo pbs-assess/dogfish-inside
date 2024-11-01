@@ -3,8 +3,6 @@ library(dplyr)
 library(gfplot)
 library(ggplot2)
 library(tibble)
-# Source
-source("R/utils.R")
 # Theme set
 ggplot2::theme_set(gfplot::theme_pbs())
 
