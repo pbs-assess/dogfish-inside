@@ -72,15 +72,32 @@ ggplot(d, aes(x = factor(year), y = length, colour = factor(sex))) +
 ggplot(d, aes(x = gear, y = length, colour = factor(sex))) +
   geom_boxplot()
 
-# Glance
+# Bottom trawl
 dbt <- d |> dplyr::filter(gear == "Bottom trawl")
 
 table(dbt |> dplyr::select(year, sampling_desc))
 
+ggplot(dbt, aes(x = length, fill = factor(sex))) +
+  # geom_bar(position = position_dodge2()) +
+  geom_bar() +
+  facet_grid(rows = vars(sampling_desc))
+
+# Hook and line
 dhl <- d |> dplyr::filter(gear == "Hook and line")
 
 table(dhl |> dplyr::select(year, sampling_desc))
 
+ggplot(dhl, aes(x = length, fill = factor(sex))) +
+  # geom_bar(position = position_dodge2()) +
+  geom_bar() +
+  facet_grid(rows = vars(sampling_desc))
+
+# Midwater trawl
 dmt <- d |> dplyr::filter(gear == "Midwater trawl")
 
 table(dmt |> dplyr::select(year, sampling_desc))
+
+ggplot(dmt, aes(x = length, fill = factor(sex))) +
+  # geom_bar(position = position_dodge2()) +
+  geom_bar() +
+  facet_grid(rows = vars(sampling_desc))
