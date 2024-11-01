@@ -13,8 +13,4 @@ path <- file.path("ss3", "A00")
 
 # Write ------------------------------------------------------------------------
 
-ssio::write_starter(
-  file = file.path(path, "starter.ss"), 
-  sd_report_year_min = 2023, # TODO consider
-  sd_report_year_max = 2023, # TODO consider
-)
+ssio::write_starter()
