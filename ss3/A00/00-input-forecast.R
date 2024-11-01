@@ -13,6 +13,4 @@ path <- file.path("ss3", "A00")
 
 # Write ------------------------------------------------------------------------
 
-ssio::write_forecast(
-  file = file.path(path, "forecast.ss")
-)
+ssio::write_forecast()
