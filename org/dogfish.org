@@ -2,21 +2,29 @@
 #+archive: ::* Archive
 
 * Tasks
-** todo Setup report/ folder using csasdown [0/3]                    :assess:
-   - [ ] Setup report structure
+** Dig into fleet decisions [0/4]
+   - [ ] How are discards handled when fleets are combined?
+   - [ ] How are length compositions handled?
+   - [ ] What ss3 inputs govern handling of discards?
+   - [ ] What selectivities can differ and which mirrored?
+** Setup report/ folder using csasdown [1/3]
+   - [X] Setup report structure
    - [ ] Begin populating methods with preliminary decisions
    - [ ] Begin assembling visuals workflow
-** Update input files [0/4]                                          :assess:
+** Update input files [0/4]
    - [ ] Update starter
    - [ ] Update data
    - [ ] Update control
    - [ ] Update forecast
-** Compare model choices [0/2]                                       :assess:
+** Compare model choices [0/2]
    - [ ] Compare model choices to US assessment
    - [ ] Compare model choices to Canadian assessments
 ** Generate data figures [/]
 ** Fit base model [/]  
+** Consider sensitivity analyses [/]
+   - [ ] High historical catch 1876-1934 (Ketchen)
 * Questions
+** How does ss3 get from catch pieces to biomass?
 ** Include commercial landings 1876--1936?
 ** Include max early commercial landings sensitivity?
 ** Recreational dogfish lengths in GFBio?
