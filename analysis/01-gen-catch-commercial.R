@@ -22,10 +22,11 @@ d0 <- readRDS(here::here("data", "raw", "catch-commercial.rds")) |>
       c("BOTTOM TRAWL")              ~ "Bottom trawl",
       c("MIDWATER TRAWL")            ~ "Midwater trawl",
       c("HOOK AND LINE", "LONGLINE") ~ "Hook and line",
-      c("TRAP")                      ~ "Trap",
-      c("UNKNOWN TRAWL")             ~ "Unknown trawl"
+      c("UNKNOWN TRAWL")             ~ "Unknown trawl",
+      # c("TRAP")                      ~ "Trap"
     )
   ) |>
+  tidyr::drop_na(gear) |>
   select(year, area, species_common_name, gear, landed_kg, discarded_kg) |>
   dplyr::group_by(year, species_common_name, gear, area) |>
   dplyr::summarise(
@@ -140,4 +141,11 @@ saveRDS(d, file = "data/generated/catch-commercial.rds")
 
 ggplot(d, aes(x = year, y = catch_t, fill = type)) +
   geom_bar(position = "stack", stat = "identity") +
-  facet_wrap(~gear, ncol = 1)
+  # facet_wrap(~gear, ncol = 1)
+  facet_wrap(~gear, ncol = 1, scales = "free_y")
+
+# Midwater trawl
+d0 |>
+  dplyr::filter(gear == "Midwater trawl") |>
+  ggplot(aes(x = year, y = catch_t, fill = type)) +
+  geom_bar(position = "stack", stat = "identity")
