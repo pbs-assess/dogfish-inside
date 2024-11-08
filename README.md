@@ -37,5 +37,5 @@ combination with the R package ssio (under development).
 ## Next steps
 
 - [ ] Iterate fits in ss3/T00/ to explore base model options
-- [ ] Develop base model in ss3/A00 using ss3/T00/ workflow
+- [ ] Develop base model in ss3/A00/ using ss3/T00/ workflow
 - [ ] Develop additional (sensitivity) model fits
