@@ -7,6 +7,11 @@ library(ssio)
 
 path <- file.path("ss3", "T00")
 
+# Fleets -----------------------------------------------------------------------
+
+source(file.path(path, "00-fleets.R"))
+fleets()
+
 # Define -----------------------------------------------------------------------
 
 ?ssio::write_control()
@@ -68,60 +73,90 @@ spawner_recruitment_parameters <- create_p() |>
 # Catchability -----------------------------------------------------------------
 
 catchability_info <- create_catchability_info() |>
-  append_catchability_info(4, 1, 0, 0, 0, 1, name = "HBLL")
+  append_catchability_info(7, 1, 0, 0, 0, 1, name = "HBLL survey")
 
 catchability_parameters <- create_p() |>
   append_p(-5, 5, -2.65, 0, 0, 0, -50, name = "LnQ_base_HBLL")
 
 # Selectivity ------------------------------------------------------------------
 
-n_fleets <- 4
+n_fleets <- 8
 
 selectivity_size_info <- create_selectivity_info() |>
-  append_selectivity_info(24, 0, 0, 0, name = "Bottom trawl") |>
+  append_selectivity_info(24, 0, 0, 0, name = "Bottom trawl landings") |>
+  append_selectivity_info(24, 0, 0, 0, name = "Bottom trawl discards") |>  
   append_selectivity_info(24, 0, 0, 0, name = "Midwater trawl") |>
-  append_selectivity_info(24, 0, 0, 0, name = "Hook and line") |>
-  append_selectivity_info(24, 0, 0, 0, name = "HBLL")
+  append_selectivity_info(24, 0, 0, 0, name = "Hook and line landings") |>
+  append_selectivity_info(24, 0, 0, 0, name = "Hook and line discards") |>
+  append_selectivity_info(15, 0, 0, 1, name = "All gears landings") |>
+  append_selectivity_info(24, 0, 0, 0, name = "HBLL survey") |>
+  append_selectivity_info(15, 0, 0, 7, name = "Recreational landings") 
 
 selectivity_age_info <- create_selectivity_info() |>
-  append_selectivity_info(0, 0, 0, 0, name = "Bottom trawl") |>
+  append_selectivity_info(0, 0, 0, 0, name = "Bottom trawl landings") |>
+  append_selectivity_info(0, 0, 0, 0, name = "Bottom trawl discards") |>  
   append_selectivity_info(0, 0, 0, 0, name = "Midwater trawl") |>
-  append_selectivity_info(0, 0, 0, 0, name = "Hook and line") |>
-  append_selectivity_info(0, 0, 0, 0, name = "HBLL")
+  append_selectivity_info(0, 0, 0, 0, name = "Hook and line landings") |>
+  append_selectivity_info(0, 0, 0, 0, name = "Hook and line discards") |>
+  append_selectivity_info(0, 0, 0, 0, name = "All gears landings") |>
+  append_selectivity_info(0, 0, 0, 0, name = "HBLL survey") |>
+  append_selectivity_info(0, 0, 0, 0, name = "Recreational landings")  
 
 selectivity_parameters <- create_p() |>
-  append_p( 35, 150, 106, 100,  30, 6,   3, name = "size_p_1_Bottom_trawl") |>
-  append_p(-10,  50, -10,   0,   0, 0, -50, name = "size_p_2_Bottom_trawl") |>
-  append_p(-10,  10, 5.4,   5, 0.3, 6,   3, name = "size_p_3_Bottom_trawl") |>
-  append_p(-10,  50,  15,   0,   0, 0, -50, name = "size_p_4_Bottom_trawl") |>
-  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_Bottom_trawl") |>
-  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_Bottom_trawl") |>
+  # Bottom trawl landings
+  append_p( 35, 150, 106, 100,  30, 6,   3, name = "size_p_1_BT_landings") |>
+  append_p(-10,  50, -10,   0,   0, 0, -50, name = "size_p_2_BT_landings") |>
+  append_p(-10,  10, 5.4,   5, 0.3, 6,   3, name = "size_p_3_BT_landings") |>
+  append_p(-10,  50,  15,   0,   0, 0, -50, name = "size_p_4_BT_landings") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_BT_landings") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_BT_landings") |>
+  # Bottom trawl discards
+  append_p( 35, 150, 106, 100,  30, 6,   3, name = "size_p_1_BT_discards") |>
+  append_p(-10,  50, -10,   0,   0, 0, -50, name = "size_p_2_BT_discards") |>
+  append_p(-10,  10, 5.4,   5, 0.3, 6,   3, name = "size_p_3_BT_discards") |>
+  append_p(-10,  50,  15,   0,   0, 0, -50, name = "size_p_4_BT_discards") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_BT_discards") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_BT_discards") |>
+  # Midwater trawl
   append_p( 35, 110,  53,  55,  17, 6,   3, name = "size_p_1_Midwater_trawl") |>
   append_p(-10,  50, -10,   0,   0, 0, -50, name = "size_p_2_Midwater_trawl") |>
   append_p(-10,  10, 5.4, 4.6, 0.3, 6,   3, name = "size_p_3_Midwater_trawl") |>
   append_p(-10,  10, 5.2,   4, 0.3, 6,   3, name = "size_p_4_Midwater_trawl") |>
   append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_Midwater_trawl") |>
   append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_6_Midwater_trawl") |>
-  append_p( 35, 110,  101, 95,  28, 6,   3, name = "size_p_1_Hook_and_line") |>
-  append_p(-10,  50,  -10,  0,   0, 0, -50, name = "size_p_2_Hook_and_line") |>
-  append_p(-10,  10,  4.7,  4, 0.3, 6,   3, name = "size_p_3_Hook_and_line") |>
-  append_p(-10,  50,   15,  0,   0, 0, -50, name = "size_p_4_Hook_and_line") |>
-  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_Hook_and_line") |>
-  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_Hook_and_line") |>
-  append_p( 35, 200,  150, 95,  28, 6,   3, name = "size_p_1_HBLL") |>
-  append_p(-10,  50,  -10,  0,   0, 0, -50, name = "size_p_2_HBLL") |>
-  append_p(-10,  10, 6.2, 5.7, 0.3, 6,   3, name = "size_p_3_HBLL") |>
-  append_p(-10,  50,  15,   0,   0, 0, -50, name = "size_p_4_HBLL") |>
-  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_HBLL") |>
-  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_HBLL")
+  # Hook and line landings
+  append_p( 35, 110,  101, 95,  28, 6,   3, name = "size_p_1_HL_landings") |>
+  append_p(-10,  50,  -10,  0,   0, 0, -50, name = "size_p_2_HL_landings") |>
+  append_p(-10,  10,  4.7,  4, 0.3, 6,   3, name = "size_p_3_HL_landings") |>
+  append_p(-10,  50,   15,  0,   0, 0, -50, name = "size_p_4_HL_landings") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_HL_landings") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_HL_landings") |>
+  # Hook and line discards
+  append_p( 35, 110,  101, 95,  28, 6,   3, name = "size_p_1_HL_discards") |>
+  append_p(-10,  50,  -10,  0,   0, 0, -50, name = "size_p_2_HL_discards") |>
+  append_p(-10,  10,  4.7,  4, 0.3, 6,   3, name = "size_p_3_HL_discards") |>
+  append_p(-10,  50,   15,  0,   0, 0, -50, name = "size_p_4_HL_discards") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_HL_discards") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_HL_discards") |>
+  # HBLL survey
+  append_p( 35, 200,  150, 95,  28, 6,   3, name = "size_p_1_HBLL_survey") |>
+  append_p(-10,  50,  -10,  0,   0, 0, -50, name = "size_p_2_HBLL_survey") |>
+  append_p(-10,  10, 6.2, 5.7, 0.3, 6,   3, name = "size_p_3_HBLL_survey") |>
+  append_p(-10,  50,  15,   0,   0, 0, -50, name = "size_p_4_HBLL_survey") |>
+  append_p(-999, 70, -999,  0,   0, 0, -50, name = "size_p_5_HBLL_survey") |>
+  append_p(-999, 999, -999, 0,   0, 0, -50, name = "size_p_6_HBLL_survey")
 
 # Variance adjustment ----------------------------------------------------------
 
 variance_info <- create_variance_info() |>
-  append_variance_info(4, 1, 1, name = "Bottom trawl") |>
-  append_variance_info(4, 2, 1, name = "Midwater trawl") |>
-  append_variance_info(4, 3, 1, name = "Hook and line") |>
-  append_variance_info(4, 4, 1, name = "HBLL")
+  append_variance_info(4, 1, 1, name = "Bottom trawl landings") |>
+  append_variance_info(4, 2, 1, name = "Bottom trawl discards") |>
+  append_variance_info(4, 3, 1, name = "Midwater trawl") |>
+  append_variance_info(4, 4, 1, name = "Hook and line landings") |>
+  append_variance_info(4, 5, 1, name = "Hook and line discards") |>
+  append_variance_info(4, 6, 1, name = "All gears landings") |>
+  append_variance_info(4, 8, 1, name = "HBLL survey") |> 
+  append_variance_info(4, 7, 1, name = "Recreational landings")
 
 # Lambda -----------------------------------------------------------------------
 
@@ -170,3 +205,4 @@ ssio::write_control(
   lambda_info = lambda_info,
   sd_report_option = 0
 )
+
