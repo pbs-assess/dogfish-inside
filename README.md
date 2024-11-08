@@ -31,11 +31,11 @@ line”) and `type` (e.g. “landings”). Because fleet definitions may
 differ between models, data files for catch (catch.rds), indexes
 (index.rds), and lengths (length.rds) are stored (in data/ss3/) with
 `gear` and `type` columns, to allow the analyst to define fleets
-specific to each model fit (typically in ss3/xxx/00-input-\*.R) using
-the R package ssio (under development).
+specific to each model fit (typically in ss3/xxx/00-fleets.R) in
+combination with the R package ssio (under development).
 
-## Luke Todo
+## Next steps
 
-- [ ] Update R package ssio to assemble input data from stored data
-- [ ] Update ss3/T00/ to fit test case model
-- [ ] Remove dependence on R/ subfolder
+- [ ] Iterate fits in ss3/T00/ to explore base model options
+- [ ] Develop base model in ss3/A00 using ss3/T00/ workflow
+- [ ] Develop additional (sensitivity) model fits
