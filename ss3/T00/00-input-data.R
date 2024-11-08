@@ -45,6 +45,7 @@ catch_data <- readRDS("data/ss3/catch.rds") |>
   dplyr::select(year, fleet_name, catch) |>
   dplyr::group_by(year, fleet_name) |>
   dplyr::summarise(catch = sum(catch), .groups = "drop") |>
+  dplyr::mutate(catch = round(catch, 3)) |>
   dplyr::mutate(fleet = fleets(fleet_name)) |>
   dplyr::arrange(fleet, year) |>
   dplyr::mutate(season = 1) |>
@@ -57,7 +58,10 @@ catch_data <- readRDS("data/ss3/catch.rds") |>
 # Index
 index_info <- create_index_info() |>
   append_index_info(8, 0, name = "HBLL survey")
-index_data <- readRDS("data/ss3/index.rds")
+index_data <- readRDS("data/ss3/index.rds") |>
+  dplyr::mutate(fleet_name = paste(gear, type)) |>
+  dplyr::mutate(fleet = fleets(fleet_name)) |>
+  dplyr::select(year, month, fleet, est, se)
 # # Discards
 # discard_info <- NULL
 # discard_data <- NULL
@@ -129,7 +133,7 @@ length_data <- readRDS("data/ss3/length.rds") |>
 
 ssio::write_data(
   file = file.path(path, "data.ss"),
-  year_start = 1954,
+  year_start = 1876,
   year_end = 2023,
   n_seasons_per_year = 1,
   n_months_per_season = 12,
