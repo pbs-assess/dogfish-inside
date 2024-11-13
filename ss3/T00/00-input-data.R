@@ -56,8 +56,16 @@ catch_data <- readRDS("data/ss3/catch.rds") |>
 # End consider developing ssio:: functions for catch formatting
 
 # Index
+# Note: Apparently needs all fleets to read in data
 index_info <- create_index_info() |>
-  append_index_info(8, 0, name = "HBLL survey")
+  append_index_info(1, 1, name = "Bottom trawl landings") |>  
+  append_index_info(2, 1, name = "Bottom trawl discards") |>  
+  append_index_info(3, 1, name = "Midwater trawl") |>  
+  append_index_info(4, 1, name = "Hook and line landings") |>  
+  append_index_info(5, 1, name = "Hook and line discards") |>  
+  append_index_info(6, 1, name = "All gears landings") |>  
+  append_index_info(7, 0, name = "HBLL survey") |>    
+  append_index_info(8, 0, name = "Recreational landings")
 index_data <- readRDS("data/ss3/index.rds") |>
   dplyr::mutate(fleet_name = paste(gear, type)) |>
   dplyr::mutate(fleet = fleets(fleet_name)) |>
