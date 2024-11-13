@@ -53,6 +53,10 @@ mortality_growth_parameters <- create_p() |>
   append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_2") |>
   append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_3") |>
   append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_4") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_5") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_6") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_7") |>
+  append_p(0.000, 2.00, 1.0000, 0, 0, 0, -50, name = "Catch_Mult:_8") |>  
   append_p(0.000, 1.00, 0.5000, 0, 0, 0, -50, name = "FracFemale_GP_1")
 
 # Seasonal ---------------------------------------------------------------------
