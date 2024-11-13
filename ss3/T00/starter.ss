@@ -28,4 +28,4 @@ control.ss # file name control
 2 # mcmc detail
 0 # alk tolerance
 0 # boot seed
-3.3 # check value
+3.30 # check value

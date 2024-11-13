@@ -53,6 +53,10 @@
 0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_2
 0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_3
 0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_4
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_5
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_6
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_7
+0 2 1 0 0 0 -50 0 0 0 0 0 0 0 # Catch_Mult:_8
 0 1 0.5 0 0 0 -50 0 0 0 0 0 0 0 # FracFemale_GP_1
 # seasonality info
 # wt_len_fem_1 wt_len_fem_2 maturity_1 maturity_2 fecundity_1 fecundity_2 wt_len_mal_1 wt_len_mal_2 l1 von_bert_k name
@@ -80,57 +84,81 @@
 4 # fishing iterations
 # catchability info
 # fleet link_type link_info extra_se bias_adjust float name
-4 1 0 0 0 1 # HBLL
+7 1 0 0 0 1 # HBLL survey
 -9999 0 0 0 0 0 # terminal line
 # catchability parameters
 # lower upper initial prior_mean prior_sd prior_type phase env_link dev_link dev_year_min dev_year_max dev_phase block block_fn name
 -5 5 -2.65 0 0 0 -50 0 0 0 0 0 0 0 # LnQ_base_HBLL
 # selectivity size info
 # pattern discard male special name
-24 0 0 0 # Bottom trawl
+24 0 0 0 # Bottom trawl landings
+24 0 0 0 # Bottom trawl discards
 24 0 0 0 # Midwater trawl
-24 0 0 0 # Hook and line
-24 0 0 0 # HBLL
+24 0 0 0 # Hook and line landings
+24 0 0 0 # Hook and line discards
+15 0 0 1 # All gears landings
+24 0 0 0 # HBLL survey
+15 0 0 7 # Recreational landings
 # selectivity age info
 # pattern discard male special name
-0 0 0 0 # Bottom trawl
+0 0 0 0 # Bottom trawl landings
+0 0 0 0 # Bottom trawl discards
 0 0 0 0 # Midwater trawl
-0 0 0 0 # Hook and line
-0 0 0 0 # HBLL
+0 0 0 0 # Hook and line landings
+0 0 0 0 # Hook and line discards
+0 0 0 0 # All gears landings
+0 0 0 0 # HBLL survey
+0 0 0 0 # Recreational landings
 # selectivity parameters
 # lower upper initial prior_mean prior_sd prior_type phase env_link dev_link dev_year_min dev_year_max dev_phase block block_fn name
-35 150 106 100 30 6 3 0 0 0 0 0 0 0 # size_p_1_Bottom_trawl
--10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_Bottom_trawl
--10 10 5.4 5 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_Bottom_trawl
--10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_Bottom_trawl
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_Bottom_trawl
--999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_Bottom_trawl
+35 150 106 100 30 6 3 0 0 0 0 0 0 0 # size_p_1_BT_landings
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_BT_landings
+-10 10 5.4 5 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_BT_landings
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_BT_landings
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_BT_landings
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_BT_landings
+35 150 106 100 30 6 3 0 0 0 0 0 0 0 # size_p_1_BT_discards
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_BT_discards
+-10 10 5.4 5 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_BT_discards
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_BT_discards
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_BT_discards
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_BT_discards
 35 110 53 55 17 6 3 0 0 0 0 0 0 0 # size_p_1_Midwater_trawl
 -10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_Midwater_trawl
 -10 10 5.4 4.6 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_Midwater_trawl
 -10 10 5.2 4 0.3 6 3 0 0 0 0 0 0 0 # size_p_4_Midwater_trawl
 -999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_Midwater_trawl
 -999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_Midwater_trawl
-35 110 101 95 28 6 3 0 0 0 0 0 0 0 # size_p_1_Hook_and_line
--10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_Hook_and_line
--10 10 4.7 4 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_Hook_and_line
--10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_Hook_and_line
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_Hook_and_line
--999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_Hook_and_line
-35 200 150 95 28 6 3 0 0 0 0 0 0 0 # size_p_1_HBLL
--10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_HBLL
--10 10 6.2 5.7 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_HBLL
--10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_HBLL
--999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_HBLL
--999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_HBLL
+35 110 101 95 28 6 3 0 0 0 0 0 0 0 # size_p_1_HL_landings
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_HL_landings
+-10 10 4.7 4 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_HL_landings
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_HL_landings
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_HL_landings
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_HL_landings
+35 110 101 95 28 6 3 0 0 0 0 0 0 0 # size_p_1_HL_discards
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_HL_discards
+-10 10 4.7 4 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_HL_discards
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_HL_discards
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_HL_discards
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_HL_discards
+35 200 150 95 28 6 3 0 0 0 0 0 0 0 # size_p_1_HBLL_survey
+-10 50 -10 0 0 0 -50 0 0 0 0 0 0 0 # size_p_2_HBLL_survey
+-10 10 6.2 5.7 0.3 6 3 0 0 0 0 0 0 0 # size_p_3_HBLL_survey
+-10 50 15 0 0 0 -50 0 0 0 0 0 0 0 # size_p_4_HBLL_survey
+-999 70 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_5_HBLL_survey
+-999 999 -999 0 0 0 -50 0 0 0 0 0 0 0 # size_p_6_HBLL_survey
 0 # use selectivity 2d
 0 # use tag recapture
 # variance info
 # factor fleet value name
-4 1 1 # Bottom trawl
-4 2 1 # Midwater trawl
-4 3 1 # Hook and line
-4 4 1 # HBLL
+4 1 1 # Bottom trawl landings
+4 2 1 # Bottom trawl discards
+4 3 1 # Midwater trawl
+4 4 1 # Hook and line landings
+4 5 1 # Hook and line discards
+4 6 1 # All gears landings
+4 8 1 # HBLL survey
+4 7 1 # Recreational landings
 -9999 0 0 # terminal line
 1 # lambda max phase
 0 # lambda sd offset
