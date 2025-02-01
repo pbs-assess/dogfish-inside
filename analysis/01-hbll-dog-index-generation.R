@@ -28,7 +28,7 @@ coast_proj <- sf::st_transform(coast, crs = bccrs)
 
 # load data----------------------------------------------
 
-df <- readRDS("data-raw/wrangled-hbll-dog-sets.rds") |>
+df <- readRDS("data/raw/wrangled-hbll-dog-sets.rds") |>
   drop_na(catch_count) |>
   drop_na(offset) |>
   drop_na(julian)
