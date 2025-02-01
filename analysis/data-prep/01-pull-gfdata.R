@@ -1,8 +1,8 @@
 # This script will only work with access to the DFO PBS databases
 #pulled this from Dogfish-assess
-#adjust as necessary for these data
 
 # remotes::install_github('pbs-assess/gfdata')
+# remotes::install_github("pbs-assess/gfdata", ref = "trials", force = TRUE) #get get_all
 library(gfdata)
 
 spp <- "044"
@@ -15,6 +15,16 @@ survey_sets <- get_survey_sets(
   verbose = TRUE,
   sleep = 0
 )
+
+# Read HBLL survey hook data from GFBio for area 4B
+dh <- gfdata::get_ll_hook_data(
+  species = "044", 
+  ssid = c(39, 40)
+) |>
+  dplyr::filter(major == 1) # Area 4B
+tibble::view(dh)
+saveRDS(dh, file = "data/raw/index-hbll-hooks.rds")
+
 
 survey_samples <- get_survey_samples(
   species = spp,
@@ -43,6 +53,19 @@ survey_index <- get_survey_index(spp)
 
 # age_precision <- get_age_precision(spp)
 
+# pull inside dogfish and hbll sets
+# survey ids include all of the dogfish surveys on the inside
+d <- get_all_survey_sets("north pacific spiny dogfish", ssid = c(76, 48, 39, 40))
+unique(d$survey_abbrev)
+d$vessel_id <- NULL
+
+# pull inside samples data
+samps_all <- get_all_survey_samples("north pacific spiny dogfish", ssid = c(76, 48, 39, 40), include_event_info = TRUE)
+samps_all$vessel_id <- NULL
+samps_all$dna_sample_type <- NULL
+samps_all$dna_container_id <- NULL
+
+
 save_dat <- function(obj, filename) {
   attr(obj, "version") <- utils::packageVersion("gfdata")
   attr(obj, "date") <- Sys.time()
@@ -54,3 +77,5 @@ save_dat(survey_samples, "survey-samples")
 save_dat(commercial_samples, "commercial-samples")
 save_dat(catch, "catch")
 save_dat(survey_index, "design-based-indices")
+save_dat(d, "survey-sets-getall")
+save_dat(samps_all, "survey-samples-getall")
