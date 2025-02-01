@@ -4,18 +4,18 @@
 bccrs <- 32609
 latitude_cutoff <- 50.34056 #<- not sure what the "best" boundary to pick for separating n and s is I used the largest latitude in the hbll_ins_s grid at the line
 
-#library(gfdata)
+# library(gfdata)
 library(ggplot2)
 library(tidyverse)
 library(here)
-#library(sdmTMB)
-#library(sf)
-#library(sp)
+# library(sdmTMB)
+# library(sf)
+# library(sp)
 
 # load data ---------------------------------------------------------------
-samps <- readRDS("data-raw/dogfish_samples_cleaned.rds")
+samps <- readRDS("data/raw/dogfish_samples_cleaned.rds")
 sampshb <- samps |> filter(survey_abbrev %in% c("HBLL INS S", "HBLL INS N")) # drop hbll samps not included in the gfdata pull.
-sampsgf <- readRDS("data-raw/dogfish_samples_gfdata.rds") |>
+sampsgf <- readRDS("data/raw/dogfish_samples_gfdata.rds") |>
   filter(survey_abbrev %in% c("HBLL INS S", "HBLL INS N"))
 
 sampshb <- sampshb |>
@@ -56,7 +56,7 @@ x + geom_point(data = hbllrm, aes(longitude, latitude), col = "red")
 
 
 # wrangle -----------------------------------------------------------------
-sampsdog <- readRDS("data-raw/dogfish_samples_cleaned.rds") |>
+sampsdog <- readRDS("data/raw/dogfish_samples_cleaned.rds") |>
   filter(!survey_abbrev %in% c("HBLL INS S", "HBLL INS N"))
 
 hsamps <- sampshb |>
