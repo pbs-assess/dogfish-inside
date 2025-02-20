@@ -4,12 +4,14 @@ library(gfdata)
 library(terra)
 library(tidyverse)
 library(sf)
+library(here)
 
 # NOTES
-# Generate a prediction grid with an area-weighted mean depth (versus centroid depth) and trim cell area to coastline (i.e. overwater area).
+# Generate a prediction grid with an area-weighted mean depth, area weight mean depth with only those depths sampled by the survey for that block, and centroid depth. 
+# Grid trimmed to coastline and overwater area calculated.
 # make grids that covers HBLL N and S and all of Strait of Georgia
 # have the HBLL INS grid nested inside the bigger grid
-# for HBLL INS N and S, have a column that calculates the area that is a mean of the area sampled for the block (deep or shallow)
+
 
 # DEM and land mass data is on one drive (too big for github): OneDrive - DFO-MPO\lingcod and dogfish program\dogfish-inside\data-raw\
 # Could get a higher resolution DEM
@@ -98,18 +100,24 @@ soggrid3 <- soggrid3 %>%
   mutate(FID = seq(1:n())) |>
   mutate(area_km2 = as.numeric(area_km2))
 
-ggplot() +
-  geom_sf(data = soggrid3, aes(fill = survey_abbrev))
+#sog grid with DEM depths from centroid
+soggrid4 <-  soggrid3 |>
+  st_centroid() |>
+  mutate(
+    UTM.lat.m = unlist(purrr::map(x, 2)),
+    UTM.lon.m = unlist(purrr::map(x, 1))
+  ) |>
+  st_join(bdepths_sf) |>
+  st_drop_geometry() |>
+  mutate(depth_dem_m = west_coast_dem * -1) |> 
+  mutate(UTM.lat = UTM.lat.m / 1000, UTM.lon = UTM.lon.m / 1000) |> 
+  mutate(depth_dem_m = ifelse(is.na(depth_dem_m) == TRUE, depth_m, depth_dem_m)) #use the original depth if NA
 
-ggplot() +
-  geom_sf(data = soggrid3, aes(fill = survey_abbrev))
+soggrid4 |> filter(is.na(depth_dem_m) == TRUE) |> tally() #how many have NA depths
+ggplot() + geom_point(data = soggrid4, aes(UTM.lon, UTM.lat, colour = depth_dem_m))
+saveRDS(soggrid4, "data/generated/prediction-grid-centroid-dem-depth.rds")
 
-soggrid3 |>
-  drop_na(area_orig) |>
-  ggplot() +
-  geom_point(aes(area_orig, area_km2)) # diff btwn overwater calc (area_orig) and what's completed here.
-
-
+#calculate area-weighted depth
 # intersect SOG grid with the DEM to get depth
 bdepths <- crop(r.pr, soggrid3)
 bdepths_poly <- terra::as.polygons(bdepths)
@@ -149,39 +157,49 @@ bdepths_int2 <- bdepths_int |>
 bdepths_int3 <- bdepths_int2 |>
   filter(in_depth_range != "no") |> 
   mutate(weight = area_int / sum(area_int)) |>
-  mutate(area_weighted_depth = (west_coast_dem * weight)) |>
+  mutate(area_weighted_depth = (depth_dem_m * weight)) |>
   group_by(FID) |>
-  mutate(area_weighted_mean_depth = sum(area_weighted_depth) / sum(weight)) |>
-  distinct(FID, .keep_all = TRUE)
+  mutate(area_weighted_mean_depth_realized = sum(area_weighted_depth) / sum(weight)) |> #depth that falls into the HBLL block categories or between the dogfish depth limits
+  distinct(FID, .keep_all = TRUE) |> 
+  dplyr::select(id, survey_abbrev, survey_series_id, block_id, depth_m, active_block, area_orig, G_DEPTH_ID, area_km2, depth_dem_m, area_weighted_mean_depth_realized)
 
-bdepths_int4 <- bdepths_int3 |>
+
+bdepths_int4 <- bdepths_int2 |>
+  mutate(weight = area_int / area_km2) |>
+  mutate(area_weighted_depth = (depth_dem_m * weight)) |>
+  group_by(FID) |>
+  mutate(area_weighted_mean_depth = sum(area_weighted_depth) / sum(weight)) |> #all the depths that intersect with that cell
+  distinct(FID, .keep_all = TRUE) |> 
   st_centroid() |>
   mutate(
     UTM.lat.m = unlist(purrr::map(x, 2)),
     UTM.lon.m = unlist(purrr::map(x, 1))
   ) |>
   st_drop_geometry() |>
-  mutate(UTM.lat = UTM.lat.m / 1000, UTM.lon = UTM.lon.m / 1000) |>
-  mutate(weighted_depth_m = area_weighted_mean_depth * -1)
+  mutate(UTM.lat = UTM.lat.m / 1000, UTM.lon = UTM.lon.m / 1000) |> 
+  dplyr::select(id, survey_abbrev, survey_series_id, block_id, depth_m, active_block, area_orig, G_DEPTH_ID, area_km2, depth_dem_m, area_weighted_mean_depth, UTM.lat.m, UTM.lon.m, UTM.lat, UTM.lon)
 
-x <- dplyr::select(bdepths3, FID, area_weighted_mean_depth, weighted_depth_m, UTM.lat.m, UTM.lat, UTM.lon, UTM.lon.m)
+x <- left_join(bdepths_int4, bdepths_int3)
 y <- soggrid3 |> st_drop_geometry()
-soggrid4 <- left_join(y, x)
+soggrid5 <- left_join(y, x)
 
 ggplot() +
   geom_sf(data = bdepths_int)
 
 ggplot() +
-  geom_point(data = soggrid4, aes(UTM.lon, UTM.lat, colour = area_weighted_mean_depth)) # for the point missing a rea weighted mean depth use the depth column from the original blocks dataset? or keep NA?
+  geom_point(data = soggrid5, aes(UTM.lon, UTM.lat, colour = area_weighted_mean_depth)) # for the point missing a rea weighted mean depth use the depth column from the original blocks dataset? or keep NA?
 
 ggplot() +
-  geom_jitter(data = bdepths_int4, aes(G_DEPTH_ID, depth_dem_m, colour = area_weighted_mean_depth)) # for the point missing a rea weighted mean depth use the depth column from the original blocks dataset? or keep NA?
+  geom_jitter(data = bdepths_int4, aes(G_DEPTH_ID, depth_dem_m, colour = area_weighted_mean_depth_realized)) # for the point missing a rea weighted mean depth use the depth column from the original blocks dataset? or keep NA?
 
 ggplot() +
-  geom_point(data = soggrid4, aes(depth_m, weighted_depth_m, colour = area_weighted_mean_depth)) # made things worse?? IE deeper??
+  geom_point(data = soggrid5, aes(area_weighted_mean_depth_realized, depth_dem_m, colour = area_weighted_mean_depth)) # made 
+ggplot() +
+  geom_point(data = soggrid5, aes(area_weighted_mean_depth, depth_dem_m, colour = area_weighted_mean_depth)) # made 
 
-range(na.omit(soggrid4$depth_m))
-range(na.omit(soggrid4$weighted_depth_m))
-range(na.omit(soggrid4$area_km2))
+range(na.omit(soggrid5$depth_m))
+range(na.omit(soggrid5$area_weighted_mean_depth_realized))
+range(na.omit(soggrid5$weighted_depth_m))
+range(na.omit(soggrid5$area_km2))
 
-saveRDS(grid, "output/prediction-grid-weighted-mean.rds")
+saveRDS(grid, "data/generated/prediction-grid-weighted-mean.rds")
