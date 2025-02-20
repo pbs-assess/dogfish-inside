@@ -8,6 +8,44 @@ library(gfdata)
 spp <- "044"
 ssid <- c(39, 40)
 
+
+x <- get_ssids()
+
+
+# pull SOG  trawl survey
+sog_trawl_sets <- get_survey_sets( #ran two years..
+  species = spp,
+  ssid = 45,
+  join_sample_ids = TRUE,
+  verbose = TRUE,
+  sleep = 0
+)
+unique(sog_trawl_sets$year)
+
+
+# ssid = 15 lingcod trawl
+sog_lingcod_sets <- get_survey_sets( #ran four years
+  species = spp,
+  ssid = 15,
+  join_sample_ids = TRUE,
+  verbose = TRUE,
+  sleep = 0
+)
+unique(sog_lingcod_sets$year)
+
+
+# 95 SOG mid water trawl 
+# sog_midwater_sets <- get_survey_sets( #not supported, not sure where we could get these data
+#   species = spp,
+#   ssid = 95,
+#   join_sample_ids = TRUE,
+#   verbose = TRUE,
+#   sleep = 0
+# )
+# unique(sog_miudwater_sets$year)
+
+
+#pull SOG HBLL N and S suvey
 survey_sets <- get_survey_sets(
   species = spp,
   ssid = ssid,
@@ -72,6 +110,9 @@ save_dat <- function(obj, filename) {
   saveRDS(obj, file = paste0("data/raw/", filename, ".rds"))
 }
 
+
+save_dat(sog_trawl_sets, "sog-trawl-sets")
+save_dat(sog_lingcod_sets, "sog-lingcod-sets")
 save_dat(survey_sets, "survey-sets")
 save_dat(survey_samples, "survey-samples")
 save_dat(commercial_samples, "commercial-samples")
