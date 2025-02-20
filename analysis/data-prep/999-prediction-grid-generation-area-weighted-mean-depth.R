@@ -175,6 +175,9 @@ ggplot() +
   geom_point(data = soggrid4, aes(UTM.lon, UTM.lat, colour = area_weighted_mean_depth)) # for the point missing a rea weighted mean depth use the depth column from the original blocks dataset? or keep NA?
 
 ggplot() +
+  geom_jitter(data = bdepths_int4, aes(G_DEPTH_ID, depth_dem_m, colour = area_weighted_mean_depth)) # for the point missing a rea weighted mean depth use the depth column from the original blocks dataset? or keep NA?
+
+ggplot() +
   geom_point(data = soggrid4, aes(depth_m, weighted_depth_m, colour = area_weighted_mean_depth)) # made things worse?? IE deeper??
 
 range(na.omit(soggrid4$depth_m))
