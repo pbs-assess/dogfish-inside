@@ -1,3 +1,6 @@
+##did not use this, ending up generating a grid using the 999-prediction-grid-generation-area-weighted-mean.depth.R
+
+
 library(tidyverse)
 # devtools::install_github("pbs-software/pbs-data/PBSdata")
 library(PBSdata)
@@ -18,30 +21,6 @@ path_center <- "generated/PredictionGridCentres.shp"
 path_final <- paste0("generated/prediction-grid-hbll-n-s-dog-", gridsize / 1000, "-km.rds")
 mindepth <- 5
 maxdepth <- 350
-
-
-# # depth file from Dana used in yelloweye assessment
-# x <- readRDS("data-raw/hbll-inside-grid_water-area.rds")
-# ggplot(x, aes(longitude, latitude, colour = depth)) + geom_point()
-# ggplot(x, aes(longitude, latitude, colour = rock100)) + geom_point()
-#
-# #depth file from Sean on slack
-# y <- readRDS("data-raw/complete_research_blocks_table.rds")
-# y <- y |> dplyr::select(starts_with("ZonalStats_bathy100.M"),
-#                         exported_research_blocks.LATITUDE,
-#                         exported_research_blocks.LONGITUDE, exported_research_blocks.SS_ALT_DES) |>
-#   filter(exported_research_blocks.SS_ALT_DES == "INS S") |>
-#   rename(latitude = exported_research_blocks.LATITUDE,
-#          longitude = exported_research_blocks.LONGITUDE,
-#          depth_m_gis = ZonalStats_bathy100.MEAN)
-# ggplot(y, aes(longitude, latitude, colour = depth_m_gis)) + geom_point()
-# ggplot(y, aes(depth_m_gis, longitude, colour = depth_m_gis)) + geom_point()
-#
-# z <- left_join(x, y)
-# grid <- grid |> dplyr::select(-area)
-# ggplot(z, aes(longitude, latitude, colour = depth)) + geom_point()
-# ggplot(z, aes(depth, depth_m_gis)) + geom_point()
-
 
 
 # prediction grid from gfdata ---------------------------------------------
