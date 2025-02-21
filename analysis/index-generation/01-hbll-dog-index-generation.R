@@ -2,7 +2,7 @@
 # 2004 is missing deployment times and therefore I can't calculate soak time
 # soak times were between 1.5-3 hours in 2004 so I don't know how to account for that
 
-#models are int only and include depth
+#models are intercept only and include depth
 #no model includes julian date
 #hbll models don't include work done during dog survey
 #dog models don't include work done during HBLL survey
@@ -48,7 +48,9 @@ df <- df |>
 
 source("999-load-grid-data.R") #this is the hbll n, s, and dogfish grid
 
-
+# load grids generated in 999-prediction-grid-generation-area-weighted-mean-depth.R
+grid_centroid <- readRDS("data/generated/prediction-grid-centroid-dem-depth.rds")
+grid_mean <- readRDS("data/generated/prediction-grid-weighted-mean.rds")
 
 # run index ---------------------------------------------------------------
 
@@ -60,10 +62,10 @@ model = "hbll-n-s"
 # model <- "dog" #<- use nbinom2
 # model <- "dogcircle" #<- use nbinom2
 
-if (model == "hblldog_no2004") { #<- everything except for dogfish comp work in 2004
+if (model == "hblldog_no2004") { #<- everything except for dogfish comparative work in 2004
   d <- df #<- 2004 was removed above with the offset can't be na.
   years <- seq(min(d$year), 2023, 1)
-  family = delta_gamma()
+  family = nbinom2() #<- count data
   grid <- purrr::map_dfr(years, ~ tibble(grid, year = .x))
   formula <- catch_count ~ 1 + as.factor(survey_lumped)
   formuladepth <- catch_count ~ log_botdepth + log_botdepth2 + as.factor(survey_lumped)
@@ -71,7 +73,7 @@ if (model == "hblldog_no2004") { #<- everything except for dogfish comp work in 
 
 if (model == "hbll-n-s") {
   d <- df |>
-    filter(survey_lumped %in% c("hbll")) |> # should I removed survey_abbrev = other?
+    filter(survey_lumped %in% c("hbll")) |> # should I remove survey_abbrev = other?
     drop_na(offset) |>
     drop_na(depth_m) |>
     drop_na(julian) |>
@@ -86,7 +88,7 @@ if (model == "hbll-n-s") {
   grid$log_botdepth2 <- grid$log_botdepth * grid$log_botdepth
   formula <- catch_count ~ 1
   formuladepth <- catch_count ~ log_botdepth + log_botdepth2
-  family = delta_gamma()
+  family = nbinom2()
 }
 
 if (model == "hbll-s") {
@@ -102,7 +104,7 @@ if (model == "hbll-s") {
   grid <- purrr::map_dfr(years, ~ tibble(grid, year = .x))
   formula <- catch_count ~ 1
   formuladepth <- catch_count ~ log_botdepth + log_botdepth2
-  family = delta_gamma()
+  family = nbinom2()
 }
 
 if (model == "hbll-n") {
@@ -118,7 +120,7 @@ if (model == "hbll-n") {
   grid <- purrr::map_dfr(years, ~ tibble(grid, year = .x))
   formula <- catch_count ~ 1
   formuladepth <- catch_count ~ log_botdepth + log_botdepth2
-  family = delta_gamma()
+  family = nbinom2()
 }
 
 if (model == "dog") {
