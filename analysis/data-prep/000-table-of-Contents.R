@@ -14,8 +14,8 @@
 
 # Pull data analysis/data-prep folder:
 01-pull-gfdata.R #pulls in the survey sets, samples, and commercial data, for hbll, dogfish survey and comp work also removes data with privacy concerns
-01a-collate-commercial-landings-discards.R #this is pulling in the estimate commercial data prior to 2000/2006 and converting  to .rds
-01b-pull-rec-and-fsc-data.R #pulls in excel sheets of creel, irec, and fsc catches
+01a-collate-commercial-landings-discards.R #pulls the estimated commercial data prior to 2000/2006 and converting  to .rds
+01b-pull-rec-and-fsc-data.R #pulls the excel sheets of creel, irec, and fsc catches
 
 # Cleaning and generating summary plots for the document
 02-gen-catch-commercial.R #cleans and bind the reconstructed discards and landings for the commercial sector. Generates some nice ggplots, use this to generate summary plots of commercial catches
@@ -29,13 +29,15 @@
 02-gen-catch-fsc.R
 
 # Pulling and cleaning the dogfish-survey and HBLL data with the comp work
-03-data-clean-sets.R #clean the get_all hbll, dogfish, and comp work sets data
+03-data-clean-sets.R #clean and identify the get_all hbll, dogfish, and comp work sets data
 03-data-clean-samples.R
-03a-wrangle-hbll-dogs-sets.R
+03a-wrangle-hbll-dogs-sets.R #includes hook competition calc
 03a-wrangle-hbll-dog-samples.R
 
 #analysis folder
-01-hbll-dog-index-generation
+01-hbll-dog-index-generation #generates index for HBLL N, S, N and S, dogfish survey, and all together
+
+#ss3 folder
 02-ss3-maturity
 02-ss3-length
 02-ss3-index
